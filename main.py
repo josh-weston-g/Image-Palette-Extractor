@@ -24,6 +24,15 @@ print(f"\nFile type: {im.format} \nImage size: {im.size} \nImage mode: {im.mode}
 im.thumbnail((200, 200))
 print(f"Resized image size: {im.size}\n")
 
+# Convert image to RGB if it is in a different mode (e.g., RGBA, P)
+if im.mode != "RGB":
+    print(f"Converting image from {im.mode} to RGB mode...\n")
+    try:
+        im = im.convert("RGB")
+    except Exception as e:
+        print(f"An error occurred during conversion: {e}. Please use a different image. Exiting.")
+        exit(1)
+
 # Get list of pixels from image
 # Returns a list of tuples representing each RGB value
 pixelsList = list(im.getdata())
