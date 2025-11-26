@@ -21,6 +21,9 @@ while True:
         print("File not found. Please enter a valid file path.")
     except requests.exceptions.RequestException as e:
         print(f"Error downloading image: {e}. Please try again.")
+    except KeyboardInterrupt:
+        print("\nProcess interrupted by user. Exiting.")
+        exit(0)
     except Exception as e:
         print(f"An error occurred: {e}. Please try again.")
 
@@ -62,6 +65,9 @@ while True:
         break
     except ValueError:
         print("Invalid input. Please enter a number between 1 and 20.")
+    except KeyboardInterrupt:
+        print("\nProcess interrupted by user. Exiting.")
+        exit(0)
 
 # Perform KMeans clustering to reduce the number of colors
 kmeans = KMeans(n_clusters=numColors, random_state=42).fit(pixels)
