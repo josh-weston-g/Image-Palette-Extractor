@@ -1,15 +1,26 @@
 from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
+import requests
+from io import BytesIO
 
 # Open image file
 while True:
-    imagePath = input("Enter path to image file: ")
+    imagePath = input("Enter path to image file or URL:")
     try:
-        im = Image.open(imagePath)
+        # Check if input is a URL
+        if imagePath.startswith(("http://", "https://")):
+            print("\nDownloading image from URL...")
+            response = requests.get(imagePath, timeout=10)
+            response.raise_for_status()  # Raise an error for bad responses
+            im = Image.open(BytesIO(response.content))
+        else:
+            im = Image.open(imagePath)
         break
     except FileNotFoundError:
         print("File not found. Please enter a valid file path.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading image: {e}. Please try again.")
     except Exception as e:
         print(f"An error occurred: {e}. Please try again.")
 
@@ -29,6 +40,7 @@ if im.mode != "RGB":
     print(f"Converting image from {im.mode} to RGB mode...\n")
     try:
         im = im.convert("RGB")
+        print("Conversion successful.\n")
     except Exception as e:
         print(f"An error occurred during conversion: {e}. Please use a different image. Exiting.")
         exit(1)
