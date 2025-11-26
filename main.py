@@ -6,8 +6,8 @@ from io import BytesIO
 
 # Open image file
 while True:
-    imagePath = input("Enter path to image file or URL:")
     try:
+        imagePath = input("Enter path to image file or URL:")
         # Check if input is a URL
         if imagePath.startswith(("http://", "https://")):
             print("\nDownloading image from URL...")
