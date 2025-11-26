@@ -3,6 +3,17 @@ import numpy as np
 from sklearn.cluster import KMeans
 import requests
 from io import BytesIO
+import colorsys
+import json
+
+# Function to convert RGB color to hue value for sorting
+def rgb_to_hue(color):
+    r, g, b = color
+    # Normalize RGB values to 0-1 range (colorsys expects this)
+    r, g, b = r / 255.0, g / 255.0, b / 255.0
+    # Convert to HSV and extract hue (h is between 0-1)
+    h = colorsys.rgb_to_hsv(r, g, b)[0]
+    return h
 
 # Open image file
 while True:
@@ -58,7 +69,7 @@ pixels = np.array(pixelsList)
 # Number of colors to reduce the image to
 while True:
     try:
-        numColors = int(input("Enter number of colors to redudce the image to (1-20): "))
+        numColors = int(input("Enter number of colors to reduce the image to (1-20): "))
         if numColors < 1 or numColors > 20:
             print("Please enter a number between 1 and 20.")
             continue
@@ -73,8 +84,33 @@ while True:
 kmeans = KMeans(n_clusters=numColors, random_state=42).fit(pixels)
 # Get the cluster centers (the representative colors) as integers (normally returns floats)
 colors = kmeans.cluster_centers_.astype(int)
+# Sort colors by hue to create rainbow order
+colors = sorted(colors, key=rgb_to_hue)
 # Print the extracted colors and their values
 print("\nExtracted colors:")
 for color in colors:
+    h = rgb_to_hue(color) # Append hue to see the sorting value (for debugging)
     r, g, b = color
-    print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b})")
+    print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}, Hue: {h:.2f})")
+
+# Ask user if they want to convert to JSON format
+convertJson = input("\nConvert colors to RGBA format? (y/n): ").lower()
+if convertJson == 'y':
+    # Get opacity value from user - default to 0.15 if no input - validate input
+    while True:
+        try:
+            opacity = float(input("Enter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
+            if opacity < 0.0 or opacity > 1.0:
+                print("Please enter a number between 0.0 and 1.0.")
+                continue
+            break
+        except ValueError:
+            print("Invalid opacity value. Please enter a number between 0.0 and 1.0.")
+        except KeyboardInterrupt:
+            print("\nProcess interrupted by user. Exiting.")
+            exit(0)
+            
+    # Convert to rgba string format
+    colors_list = [f"rgba({color[0]}, {color[1]}, {color[2]}, {opacity})" for color in colors]
+    print("\nExtracted colors (RGBA):")
+    print('"indentRainbow": ' + json.dumps(colors_list, indent=2))
