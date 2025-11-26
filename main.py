@@ -46,4 +46,8 @@ while True:
 kmeans = KMeans(n_clusters=numColors, random_state=42).fit(pixels)
 # Get the cluster centers (the representative colors) as integers (normally returns floats)
 colors = kmeans.cluster_centers_.astype(int)
-print(f"\n{colors}")
+# Print the extracted colors and their values
+print("\nExtracted colors:")
+for color in colors:
+    r, g, b = color
+    print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b})")
