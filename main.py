@@ -5,6 +5,7 @@ import requests
 from io import BytesIO
 import colorsys
 import json
+import os
 
 # Function to convert RGB color to hue value for sorting
 def rgb_to_hue(color):
@@ -100,18 +101,20 @@ while True:
         try:
             options = input("\nOptions: \n1. Copy RGB values to clipboard (not active) \n2. Copy Hex values to clipboard (not active) \n3. Reverse colour order \n4. Convert to RGBA JSON format \n\nEnter choice (1-4) or press enter to continue: ")
             if options == '1':
-                # Copy RGB values to clipboard
+                #* Copy RGB values to clipboard
                 continue
             elif options == '2':
-                # Copy Hex values to clipboard
+                #* Copy Hex values to clipboard
                 continue
             elif options == '3':
-                # Reverse color order
+                #* Reverse color order
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
                 colors = colors[::-1]
-                print("\nColor order reversed.")
+                print("\033[92m\nColor order reversed.\033[0m")  # Green
                 continue
             elif options == '4':
-                # Convert to RGBA JSON format
+                #* Convert to RGBA JSON format
                 while True:
                     try:
                         opacity = float(input("Enter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
@@ -124,11 +127,14 @@ while True:
                     except KeyboardInterrupt:
                         print("\nProcess interrupted by user. Exiting.")
                         exit(0)
-                
+
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
                 # Convert to rgba string format
                 colors_list = [f"rgba({color[0]}, {color[1]}, {color[2]}, {opacity})" for color in colors]
-                print("\nExtracted colors (RGBA):")
+                print("\n\033[96mExtracted colors (RGBA):")  # Cyan
                 print('"indentRainbow": ' + json.dumps(colors_list, indent=2))
+                print("\033[0m")  # Reset color
                 continue
             elif options == '':
                 break
