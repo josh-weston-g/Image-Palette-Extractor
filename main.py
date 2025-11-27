@@ -31,15 +31,15 @@ while True:
     # Open image file
     while True:
         try:
-            imagePath = input("\nEnter path to image file or URL:")
+            image_path = input("\nEnter path to image file or URL:")
             # Check if input is a URL
-            if imagePath.startswith(("http://", "https://")):
+            if image_path.startswith(("http://", "https://")):
                 print("\nDownloading image from URL...")
-                response = requests.get(imagePath, timeout=10)
+                response = requests.get(image_path, timeout=10)
                 response.raise_for_status()  # Raise an error for bad responses
                 im = Image.open(BytesIO(response.content))
             else:
-                im = Image.open(imagePath)
+                im = Image.open(image_path)
             break
         except FileNotFoundError:
             print("File not found. Please enter a valid file path.")
@@ -74,16 +74,16 @@ while True:
 
     # Get list of pixels from image
     # Returns a list of tuples representing each RGB value
-    pixelsList = list(im.getdata())
+    pixels_list = list(im.getdata())
 
     # Convert list of tuples to a 2D numpy array
-    pixels = np.array(pixelsList)
+    pixels = np.array(pixels_list)
 
     # Number of colors to reduce the image to
     while True:
         try:
-            numColors = int(input("Enter number of colors to reduce the image to (1-20): "))
-            if numColors < 1 or numColors > 20:
+            num_colors = int(input("Enter number of colors to reduce the image to (1-20): "))
+            if num_colors < 1 or num_colors > 20:
                 print("Please enter a number between 1 and 20.")
                 continue
             break
@@ -94,13 +94,13 @@ while True:
             exit(0)
 
     # Get the clustered colors
-    colors = get_clusters(pixels, numColors)
+    colors = get_clusters(pixels, num_colors)
     # Clear the terminal before printing the extracted colors and their values
     os.system('cls' if os.name == 'nt' else 'clear')
 
     # Main interaction loop
     while True:
-        print(f"\nExtracted {numColors} colors:")
+        print(f"\nExtracted {num_colors} colors:")
         for color in colors:
             h = rgb_to_hue(color) # Append hue to see the sorting value (for debugging)
             r, g, b = color
@@ -152,8 +152,8 @@ while True:
                 #* Change number of colors
                 while True:
                     try:
-                        numColors = int(input("\nEnter new number of colors to extract from the image to (1-20): "))
-                        if numColors < 1 or numColors > 20:
+                        num_colors = int(input("\nEnter new number of colors to extract from the image to (1-20): "))
+                        if num_colors < 1 or num_colors > 20:
                             print("Please enter a number between 1 and 20.")
                             continue
                         break
@@ -165,7 +165,7 @@ while True:
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
                 # Regenerate colors with new number
-                colors = get_clusters(pixels, numColors)
+                colors = get_clusters(pixels, num_colors)
                 print("\033[92m\nNumber of colors updated.\033[0m")  # Green
                 continue
             elif options == '':
@@ -180,8 +180,8 @@ while True:
 
     # Ask if user wants to process another image
     try:
-        continueChoice = input("\nProcess another image? (y/n): ").lower()
-        if continueChoice != 'y':
+        continue_choice = input("\nProcess another image? (y/n): ").lower()
+        if continue_choice != 'y':
             print("Exiting program.")
             break
     except KeyboardInterrupt:
