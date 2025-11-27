@@ -173,7 +173,7 @@ while True:
             else:
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print("Invalid choice. Please enter 1, 2, 3, 4, or press enter to skip.")
+                print("Invalid choice. Please enter 1, 2, 3, 4, 5, or press enter to skip.")
         except KeyboardInterrupt:
             print("\nProcess interrupted by user. Exiting.")
             exit(0)
