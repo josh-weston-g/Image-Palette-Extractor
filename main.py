@@ -16,7 +16,17 @@ def rgb_to_hue(color):
     h = colorsys.rgb_to_hsv(r, g, b)[0]
     return h
 
-# Main loop
+# Function to generate clusters - currently sorting colors in this function, might move outside later
+def get_clusters(pixels, num_colors):
+    # Perform KMeans clustering to reduce the number of colors
+    kmeans = KMeans(n_clusters=num_colors, random_state=42).fit(pixels)
+    # Get the cluster centers (the representative colors) as integers (normally returns floats)
+    colors = kmeans.cluster_centers_.astype(int)
+    # Sort colors by hue to create rainbow order
+    colors = sorted(colors, key=rgb_to_hue)
+    return colors
+
+# Main app loop
 while True:
     # Open image file
     while True:
@@ -83,15 +93,12 @@ while True:
             print("\nProcess interrupted by user. Exiting.")
             exit(0)
 
-    # Perform KMeans clustering to reduce the number of colors
-    kmeans = KMeans(n_clusters=numColors, random_state=42).fit(pixels)
-    # Get the cluster centers (the representative colors) as integers (normally returns floats)
-    colors = kmeans.cluster_centers_.astype(int)
-    # Sort colors by hue to create rainbow order
-    colors = sorted(colors, key=rgb_to_hue)
+    # Get the clustered colors
+    colors = get_clusters(pixels, numColors)
     # Clear the terminal before printing the extracted colors and their values
     os.system('cls' if os.name == 'nt' else 'clear')
 
+    # Main interaction loop
     while True:
         print("\nExtracted colors:")
         for color in colors:
@@ -101,7 +108,7 @@ while True:
         
         # Provide options to copy values to clipboard or reverse order
         try:
-            options = input("\nOptions: \n1. Copy RGB values to clipboard (not active) \n2. Copy Hex values to clipboard (not active) \n3. Reverse colour order \n4. Convert to RGBA JSON format \n\nEnter choice (1-4) or press enter to continue: ")
+            options = input("\nOptions: \n1. Copy RGB values to clipboard (not active) \n2. Copy Hex values to clipboard (not active) \n3. Reverse colour order \n4. Convert to RGBA JSON format \n5. Change number of colours \n\nEnter choice (1-5) or press enter to continue: ")
             if options == '1':
                 #* Copy RGB values to clipboard
                 # Clear the console
@@ -123,7 +130,7 @@ while True:
                 #* Convert to RGBA JSON format
                 while True:
                     try:
-                        opacity = float(input("Enter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
+                        opacity = float(input("\nEnter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
                         if opacity < 0.0 or opacity > 1.0:
                             print("Please enter a number between 0.0 and 1.0.")
                             continue
@@ -133,7 +140,6 @@ while True:
                     except KeyboardInterrupt:
                         print("\nProcess interrupted by user. Exiting.")
                         exit(0)
-
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
                 # Convert to rgba string format
@@ -141,6 +147,26 @@ while True:
                 print("\n\033[96mExtracted colors (RGBA):")  # Cyan
                 print('"indentRainbow": ' + json.dumps(colors_list, indent=2))
                 print("\033[0m")  # Reset color
+                continue
+            elif options == '5':
+                #* Change number of colors
+                while True:
+                    try:
+                        numColors = int(input("\nEnter new number of colors to reduce the image to (1-20): "))
+                        if numColors < 1 or numColors > 20:
+                            print("Please enter a number between 1 and 20.")
+                            continue
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a number between 1 and 20.")
+                    except KeyboardInterrupt:
+                        print("\nProcess interrupted by user. Exiting.")
+                        exit(0)
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
+                # Regenerate colors with new number
+                colors = get_clusters(pixels, numColors)
+                print("\033[92m\nNumber of colors updated.\033[0m")  # Green
                 continue
             elif options == '':
                 break
