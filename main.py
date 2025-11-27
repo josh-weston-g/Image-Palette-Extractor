@@ -89,37 +89,54 @@ while True:
     # Sort colors by hue to create rainbow order
     colors = sorted(colors, key=rgb_to_hue)
     # Print the extracted colors and their values
-    print("\nExtracted colors:")
-    for color in colors:
-        h = rgb_to_hue(color) # Append hue to see the sorting value (for debugging)
-        r, g, b = color
-        print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}, Hue: {h:.2f})")
-
-    # Ask user if they want to convert to JSON format
-    try:
-        convertJson = input("\nConvert colors to RGBA format? (y/n): ").lower()
-    except KeyboardInterrupt:
-        print("\nProcess interrupted by user. Exiting.")
-        exit(0)
-    if convertJson == 'y':
-        # Get opacity value from user - default to 0.15 if no input - validate input
-        while True:
-            try:
-                opacity = float(input("Enter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
-                if opacity < 0.0 or opacity > 1.0:
-                    print("Please enter a number between 0.0 and 1.0.")
-                    continue
-                break
-            except ValueError:
-                print("Invalid opacity value. Please enter a number between 0.0 and 1.0.")
-            except KeyboardInterrupt:
-                print("\nProcess interrupted by user. Exiting.")
-                exit(0)
+    while True:
+        print("\nExtracted colors:")
+        for color in colors:
+            h = rgb_to_hue(color) # Append hue to see the sorting value (for debugging)
+            r, g, b = color
+            print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}, Hue: {h:.2f})")
+        
+        # Provide options to copy values to clipboard or reverse order
+        try:
+            options = input("\nOptions: \n1. Copy RGB values to clipboard (not active) \n2. Copy Hex values to clipboard (not active) \n3. Reverse colour order \n4. Convert to RGBA JSON format \n\nEnter choice (1-4) or press enter to continue: ")
+            if options == '1':
+                # Copy RGB values to clipboard
+                continue
+            elif options == '2':
+                # Copy Hex values to clipboard
+                continue
+            elif options == '3':
+                # Reverse color order
+                colors = colors[::-1]
+                print("\nColor order reversed.")
+                continue
+            elif options == '4':
+                # Convert to RGBA JSON format
+                while True:
+                    try:
+                        opacity = float(input("Enter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
+                        if opacity < 0.0 or opacity > 1.0:
+                            print("Please enter a number between 0.0 and 1.0.")
+                            continue
+                        break
+                    except ValueError:
+                        print("Invalid opacity value. Please enter a number between 0.0 and 1.0.")
+                    except KeyboardInterrupt:
+                        print("\nProcess interrupted by user. Exiting.")
+                        exit(0)
                 
-        # Convert to rgba string format
-        colors_list = [f"rgba({color[0]}, {color[1]}, {color[2]}, {opacity})" for color in colors]
-        print("\nExtracted colors (RGBA):")
-        print('"indentRainbow": ' + json.dumps(colors_list, indent=2))
+                # Convert to rgba string format
+                colors_list = [f"rgba({color[0]}, {color[1]}, {color[2]}, {opacity})" for color in colors]
+                print("\nExtracted colors (RGBA):")
+                print('"indentRainbow": ' + json.dumps(colors_list, indent=2))
+                continue
+            elif options == '':
+                break
+            else:
+                print("Invalid choice. Please enter 1, 2, 3, 4, or press enter to skip.")
+        except KeyboardInterrupt:
+            print("\nProcess interrupted by user. Exiting.")
+            exit(0)
 
     # Ask if user wants to process another image
     try:
