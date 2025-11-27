@@ -7,6 +7,13 @@ import colorsys
 import json
 import os
 
+# Try to import climage for terminal image display
+try:
+    from climage import convert
+    CLIMAGE_AVAILABLE = True
+except ImportError:
+    CLIMAGE_AVAILABLE = False
+
 # Function to convert RGB color to hue value for sorting
 def rgb_to_hue(color):
     r, g, b = color
@@ -15,6 +22,21 @@ def rgb_to_hue(color):
     # Convert to HSV and extract hue (h is between 0-1)
     h = colorsys.rgb_to_hsv(r, g, b)[0]
     return h
+
+# Function to display image in terminal if climage is available
+def display_image_in_terminal(img):
+    if CLIMAGE_AVAILABLE:
+        try:
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            buffer.seek(0)
+            output = convert(buffer, width=60, is_unicode=True)#
+            print("Resized image preview:")
+            print(output)
+        except Exception as e:
+            print(f"Could not display image in terminal: {e}")
+    else:
+        print("climage module not available. Install climage with: pip install climage")
 
 # Function to generate clusters - currently sorting colors in this function, might move outside later
 def get_clusters(pixels, num_colors):
@@ -71,6 +93,9 @@ while True:
         except Exception as e:
             print(f"An error occurred during conversion: {e}. Please use a different image. Exiting.")
             exit(1)
+
+    # Display image in terminal if possible
+    display_image_in_terminal(im)
 
     # Get list of pixels from image
     # Returns a list of tuples representing each RGB value
