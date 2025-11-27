@@ -7,6 +7,13 @@ import colorsys
 import json
 import os
 
+# Try to import pyperclip for clipboard functionality
+try:
+    import pyperclip
+    PYPERCLIP_AVAILABLE = True
+except ImportError:
+    PYPERCLIP_AVAILABLE = False
+
 # Try to import climage for terminal image display
 try:
     from climage import convert
@@ -39,7 +46,7 @@ def display_image_in_terminal(img):
             buffer = BytesIO()
             img.save(buffer, format="PNG")
             buffer.seek(0)
-            output = convert(buffer, width=60, is_unicode=True)#
+            output = convert(buffer, width=60, is_unicode=True)
             print("Resized image preview:")
             print(output)
         except Exception as e:
@@ -145,17 +152,49 @@ while True:
         
         # Provide options to copy values to clipboard or reverse order
         try:
-            options = input("\nOptions: \n1. Copy RGB values to clipboard (not active) \n2. Copy Hex values to clipboard (not active) \n3. Reverse colour order \n4. Convert to RGBA JSON format \n5. Change number of colours \n\nEnter choice (1-5) or press enter to continue: ")
+            # Dynamically adjust options based on pyperclip availability
+            option1_text = "1. Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "1. Copy RGB values to clipboard \033[91m(not active)\033[0m"  # Red
+            option2_text = "2. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "2. Copy Hex values to clipboard \033[91m(not active)\033[0m"  # Red
+            options = input(f"\nOptions: \n{option1_text} \n{option2_text} \n3. Reverse colour order \n4. Convert to RGBA JSON format \n5. Change number of colours \n\nEnter choice (1-5) or press enter to continue: ")
+            
             if options == '1':
                 #* Copy RGB values to clipboard
+                # Error message if pyperclip not installed
+                if not PYPERCLIP_AVAILABLE:
+                    # Clear the console
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print("\033[91mpyperclip module not available. Install pyperclip with: pip install pyperclip\033[0m")  # Red
+                    continue
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
+                try:
+                    # Convert to list of strings for clipboard
+                    colors_list = [f"({color[0]}, {color[1]}, {color[2]})" for color in colors]
+                    # Join the list into a single string separated by commas
+                    pyperclip.copy(", ".join(colors_list))
+                    print("\033[92m\nRGB values copied to clipboard.\033[0m")  # Green
+                except Exception as e:
+                    print(f"\033[91mFailed to copy RGB values to clipboard: {e}\033[0m")  # Red
                 continue
+            
             elif options == '2':
                 #* Copy Hex values to clipboard
+                # Error message if pyperclip not installed
+                if not PYPERCLIP_AVAILABLE:
+                    # Clear the console
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print("\033[91mpyperclip module not available. Install pyperclip with: pip install pyperclip\033[0m")  # Red
+                    continue
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
+                try:
+                    hex_colors = rgb_to_hex(colors)   # We already have this but re-calculate in case colors were modified
+                    pyperclip.copy(", ".join(hex_colors))
+                    print("\033[92m\nHex values copied to clipboard.\033[0m")  # Green
+                except Exception as e:
+                    print(f"\033[91mFailed to copy Hex values to clipboard: {e}\033[0m")  # Red
                 continue
+            
             elif options == '3':
                 #* Reverse color order
                 # Clear the console
@@ -163,6 +202,7 @@ while True:
                 colors = colors[::-1]
                 print("\033[92m\nColor order reversed.\033[0m")  # Green
                 continue
+            
             elif options == '4':
                 #* Convert to RGBA JSON format
                 while True:
@@ -182,9 +222,10 @@ while True:
                 # Convert to rgba string format
                 colors_list = [f"rgba({color[0]}, {color[1]}, {color[2]}, {opacity})" for color in colors]
                 print("\n\033[96mExtracted colors (RGBA):")  # Cyan
-                print('"indentRainbow": ' + json.dumps(colors_list, indent=2))
+                print(json.dumps(colors_list, indent=2))
                 print("\033[0m")  # Reset color
                 continue
+            
             elif options == '5':
                 #* Change number of colors
                 while True:
@@ -205,8 +246,10 @@ while True:
                 colors = get_clusters(pixels, num_colors)
                 print("\033[92m\nNumber of colors updated.\033[0m")  # Green
                 continue
+            
             elif options == '':
                 break
+            
             else:
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
