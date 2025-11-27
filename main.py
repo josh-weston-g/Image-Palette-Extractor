@@ -89,7 +89,9 @@ while True:
     colors = kmeans.cluster_centers_.astype(int)
     # Sort colors by hue to create rainbow order
     colors = sorted(colors, key=rgb_to_hue)
-    # Print the extracted colors and their values
+    # Clear the terminal before printing the extracted colors and their values
+    os.system('cls' if os.name == 'nt' else 'clear')
+
     while True:
         print("\nExtracted colors:")
         for color in colors:
@@ -102,9 +104,13 @@ while True:
             options = input("\nOptions: \n1. Copy RGB values to clipboard (not active) \n2. Copy Hex values to clipboard (not active) \n3. Reverse colour order \n4. Convert to RGBA JSON format \n\nEnter choice (1-4) or press enter to continue: ")
             if options == '1':
                 #* Copy RGB values to clipboard
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
                 continue
             elif options == '2':
                 #* Copy Hex values to clipboard
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
                 continue
             elif options == '3':
                 #* Reverse color order
@@ -139,6 +145,8 @@ while True:
             elif options == '':
                 break
             else:
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
                 print("Invalid choice. Please enter 1, 2, 3, 4, or press enter to skip.")
         except KeyboardInterrupt:
             print("\nProcess interrupted by user. Exiting.")
