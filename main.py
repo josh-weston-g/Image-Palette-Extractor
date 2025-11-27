@@ -23,6 +23,15 @@ def rgb_to_hue(color):
     h = colorsys.rgb_to_hsv(r, g, b)[0]
     return h
 
+# Function to convert RGB to Hex
+def rgb_to_hex(colors):
+    hex_colors = []
+    for color in colors:
+        r, g, b = color
+        hex_color = f"#{r:02X}{g:02X}{b:02X}"
+        hex_colors.append(hex_color)
+    return hex_colors
+
 # Function to display image in terminal if climage is available
 def display_image_in_terminal(img):
     if CLIMAGE_AVAILABLE:
@@ -50,6 +59,9 @@ def get_clusters(pixels, num_colors):
 
 # Main app loop
 while True:
+    # Clear the terminal at the start of each loop
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("=== Image Color Extractor ===")
     # Open image file
     while True:
         try:
@@ -126,10 +138,10 @@ while True:
     # Main interaction loop
     while True:
         print(f"\nExtracted {num_colors} colors:")
-        for color in colors:
-            h = rgb_to_hue(color) # Append hue to see the sorting value (for debugging)
+        hex_colors = rgb_to_hex(colors)
+        for i, color in enumerate(colors):
             r, g, b = color
-            print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}, Hue: {h:.2f})")
+            print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}) | Hex: {hex_colors[i]}")
         
         # Provide options to copy values to clipboard or reverse order
         try:
