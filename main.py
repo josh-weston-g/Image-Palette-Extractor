@@ -100,7 +100,7 @@ while True:
 
     # Main interaction loop
     while True:
-        print("\nExtracted colors:")
+        print(f"\nExtracted {numColors} colors:")
         for color in colors:
             h = rgb_to_hue(color) # Append hue to see the sorting value (for debugging)
             r, g, b = color
@@ -152,7 +152,7 @@ while True:
                 #* Change number of colors
                 while True:
                     try:
-                        numColors = int(input("\nEnter new number of colors to reduce the image to (1-20): "))
+                        numColors = int(input("\nEnter new number of colors to extract from the image to (1-20): "))
                         if numColors < 1 or numColors > 20:
                             print("Please enter a number between 1 and 20.")
                             continue
