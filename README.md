@@ -18,7 +18,7 @@ This tool analyzes any image (local file or URL) and extracts its most dominant 
 ### Extracted Palette
 ![Image Palette Extractor Demo](screenshot.png)
 
-*Extracting 5 dominant colors from the test image above*
+*Extracting 7 dominant colors from the test image above*
 
 ## Features
 
