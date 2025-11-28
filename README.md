@@ -8,7 +8,7 @@ A command-line tool that extracts dominant color palettes from images using mach
 
 ## What it does
 
-This tool analyzes any image (local file or URL) and extracts its most dominant colors using K-means clustering. The colors are automatically sorted in rainbow order by hue, making it easy to create harmonious color schemes. You can export colors in multiple formats: RGB, Hex, or RGBA with custom opacity.
+This tool analyzes any image (local file or URL) and extracts its most dominant colors using K-means clustering. The colors can be sorted by hue (rainbow order), saturation, or brightness, making it easy to create harmonious color schemes that suit your needs. You can export colors in multiple formats: RGB, Hex, or RGBA with custom opacity.
 
 ## Demo
 
@@ -23,7 +23,7 @@ This tool analyzes any image (local file or URL) and extracts its most dominant 
 ## Features
 
 - 🎨 **Extract 1-20 dominant colors** from any image
-- 🌈 **Automatic rainbow sorting** - colors are ordered by hue for natural flow
+- 🌈 **Flexible color sorting** - sort by hue (rainbow order), saturation, or brightness
 - 📋 **Multiple export formats**:
   - RGB values: `(224, 153, 195), (158, 79, 116), ...`
   - Hex codes: `#E099C3, #9E4F74, ...`
@@ -65,11 +65,12 @@ python main.py
 The tool will guide you through:
 1. Enter an image path or URL
 2. Choose how many colors to extract (1-20)
-3. View your color palette
+3. View your color palette (sorted by hue by default)
 4. Choose what to do:
+   - Reverse the color order
+   - Sort by hue, saturation, or brightness
    - Copy RGB values to clipboard
    - Copy Hex values to clipboard
-   - Reverse the color order
    - Convert to RGBA JSON format (with custom opacity)
    - Change the number of colors
 

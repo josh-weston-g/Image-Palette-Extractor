@@ -30,6 +30,24 @@ def rgb_to_hue(color):
     h = colorsys.rgb_to_hsv(r, g, b)[0]
     return h
 
+# Function to covert RGB to saturation value for sorting
+def rgb_to_saturation(color):
+    r, g, b = color
+    # Normalize RGB values to 0-1 range (colorsys expects this)
+    r, g, b = r / 255.0, g / 255.0, b / 255.0
+    # Convert to HSV and extract saturation (s is between 0-1)
+    s = colorsys.rgb_to_hsv(r, g, b)[1]
+    return s
+
+# Function to convert RGB to brightness value for sorting
+def rgb_to_brightness(color):
+    r, g, b = color
+    # Normalize RGB values to 0-1 range (colorsys expects this)
+    r, g, b = r / 255.0, g / 255.0, b / 255.0
+    # Convert to HSV and extract value/brightness (v is between 0-1)
+    v = colorsys.rgb_to_hsv(r, g, b)[2]
+    return v
+
 # Function to convert RGB to Hex
 def rgb_to_hex(colors):
     hex_colors = []
@@ -54,14 +72,12 @@ def display_image_in_terminal(img):
     else:
         print("climage module not available. Install climage with: pip install climage")
 
-# Function to generate clusters - currently sorting colors in this function, might move outside later
+# Function to generate clusters
 def get_clusters(pixels, num_colors):
     # Perform KMeans clustering to reduce the number of colors
     kmeans = KMeans(n_clusters=num_colors, random_state=42).fit(pixels)
     # Get the cluster centers (the representative colors) as integers (normally returns floats)
     colors = kmeans.cluster_centers_.astype(int)
-    # Sort colors by hue to create rainbow order
-    colors = sorted(colors, key=rgb_to_hue)
     return colors
 
 # Main app loop
@@ -140,24 +156,83 @@ while True:
     # Get the clustered colors
     colors = get_clusters(pixels, num_colors)
     # Clear the terminal before printing the extracted colors and their values
+    current_sort = "hue" # Track current sort method
+    colors = sorted(colors, key=rgb_to_hue)
     os.system('cls' if os.name == 'nt' else 'clear')
 
     # Main interaction loop
     while True:
-        print(f"\nExtracted {num_colors} colors:")
+        print(f"\nExtracted {num_colors} colors (sorted by {current_sort}):")
         hex_colors = rgb_to_hex(colors)
         for i, color in enumerate(colors):
             r, g, b = color
+            h = rgb_to_hue(color)
+            s = rgb_to_saturation(color)
+            v = rgb_to_brightness(color)
             print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}) | Hex: {hex_colors[i]}")
+            # Optional: print HSV values for debugging
+            # print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}) | Hex: {hex_colors[i]} | H:{h:.2f} S:{s:.2f} V:{v:.2f}")
         
         # Provide options to copy values to clipboard or reverse order
         try:
+            # Dynamically adjust options based on current sort method
+            if current_sort == "hue":
+                option2_text = "2. Sort by saturation"
+                option3_text = "3. Sort by brightness"
+            elif current_sort == "saturation":
+                option2_text = "2. Sort by hue"
+                option3_text = "3. Sort by brightness"
+            elif current_sort == "brightness":
+                option2_text = "2. Sort by saturation"
+                option3_text = "3. Sort by hue"
+
             # Dynamically adjust options based on pyperclip availability
-            option1_text = "1. Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "1. Copy RGB values to clipboard \033[91m(not active)\033[0m"  # Red
-            option2_text = "2. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "2. Copy Hex values to clipboard \033[91m(not active)\033[0m"  # Red
-            options = input(f"\nOptions: \n{option1_text} \n{option2_text} \n3. Reverse colour order \n4. Convert to RGBA JSON format \n5. Change number of colours \n\nEnter choice (1-5) or press enter to continue: ")
+            option4_text = "4. Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "4. Copy RGB values to clipboard \033[91m(not active)\033[0m"  # Red
+            option5_text = "5. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "5. Copy Hex values to clipboard \033[91m(not active)\033[0m"  # Red
+
+            options = input(f"\nOptions: \n\n\033[1m--- Color Manipulation ---\033[0m\n1. Reverse colour order \n{option2_text} \n{option3_text} \n\n\033[1m--- Export/Copy ---\033[0m\n{option4_text} \n{option5_text} \n6. Convert to RGBA JSON format \n\n\033[1m--- Modify Extraction ---\033[0m\n7. Change number of colours \n\nEnter choice (1-7) or press enter to continue: ")
             
             if options == '1':
+                #* Reverse color order
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
+                colors = colors[::-1]
+                print("\033[92m\nColor order reversed.\033[0m")  # Green
+                continue
+            
+            elif options == '2':
+                #* Sort by first alternative method
+                if current_sort == "hue":
+                    colors = sorted(colors, key=rgb_to_saturation)
+                    current_sort = "saturation"
+                elif current_sort == "saturation":
+                    colors = sorted(colors, key=rgb_to_hue)
+                    current_sort = "hue"
+                elif current_sort == "brightness":
+                    colors = sorted(colors, key=rgb_to_saturation)
+                    current_sort = "saturation"
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f"\033[92m\nColors sorted by {current_sort}.\033[0m")  # Green
+                continue
+            
+            elif options == '3':
+                #* Sort by second alternative method
+                if current_sort == "hue":
+                    colors = sorted(colors, key=rgb_to_brightness)
+                    current_sort = "brightness"
+                elif current_sort == "saturation":
+                    colors = sorted(colors, key=rgb_to_brightness)
+                    current_sort = "brightness"
+                elif current_sort == "brightness":
+                    colors = sorted(colors, key=rgb_to_hue)
+                    current_sort = "hue"
+                # Clear the console
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f"\033[92m\nColors sorted by {current_sort}.\033[0m")  # Green
+                continue
+            
+            elif options == '4':
                 #* Copy RGB values to clipboard
                 # Error message if pyperclip not installed
                 if not PYPERCLIP_AVAILABLE:
@@ -177,7 +252,7 @@ while True:
                     print(f"\033[91mFailed to copy RGB values to clipboard: {e}\033[0m")  # Red
                 continue
             
-            elif options == '2':
+            elif options == '5':
                 #* Copy Hex values to clipboard
                 # Error message if pyperclip not installed
                 if not PYPERCLIP_AVAILABLE:
@@ -188,22 +263,13 @@ while True:
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
                 try:
-                    hex_colors = rgb_to_hex(colors)   # We already have this but re-calculate in case colors were modified
                     pyperclip.copy(", ".join(hex_colors))
                     print("\033[92m\nHex values copied to clipboard.\033[0m")  # Green
                 except Exception as e:
                     print(f"\033[91mFailed to copy Hex values to clipboard: {e}\033[0m")  # Red
                 continue
-            
-            elif options == '3':
-                #* Reverse color order
-                # Clear the console
-                os.system('cls' if os.name == 'nt' else 'clear')
-                colors = colors[::-1]
-                print("\033[92m\nColor order reversed.\033[0m")  # Green
-                continue
-            
-            elif options == '4':
+
+            elif options == "6":
                 #* Convert to RGBA JSON format
                 while True:
                     try:
@@ -225,12 +291,12 @@ while True:
                 print(json.dumps(colors_list, indent=2))
                 print("\033[0m")  # Reset color
                 continue
-            
-            elif options == '5':
+
+            elif options == "7":
                 #* Change number of colors
                 while True:
                     try:
-                        num_colors = int(input("\nEnter new number of colors to extract from the image to (1-20): "))
+                        num_colors = int(input("\nEnter new number of colors to extract from the image (1-20): "))
                         if num_colors < 1 or num_colors > 20:
                             print("Please enter a number between 1 and 20.")
                             continue
@@ -244,6 +310,13 @@ while True:
                 os.system('cls' if os.name == 'nt' else 'clear')
                 # Regenerate colors with new number
                 colors = get_clusters(pixels, num_colors)
+                # Re-apply current sort method
+                if current_sort == "hue":
+                    colors = sorted(colors, key=rgb_to_hue)
+                elif current_sort == "saturation":
+                    colors = sorted(colors, key=rgb_to_saturation)
+                elif current_sort == "brightness":
+                    colors = sorted(colors, key=rgb_to_brightness)
                 print("\033[92m\nNumber of colors updated.\033[0m")  # Green
                 continue
             
@@ -253,7 +326,7 @@ while True:
             else:
                 # Clear the console
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print("Invalid choice. Please enter 1, 2, 3, 4, 5, or press enter to skip.")
+                print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7 or press enter to skip.")
         except KeyboardInterrupt:
             print("\nProcess interrupted by user. Exiting.")
             exit(0)
