@@ -1,10 +1,10 @@
 # Image-Palette-Extractor
 
-![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
-A command-line tool that extracts dominant color palettes from images using machine learning. Perfect for designers, developers, or anyone who needs to pull colors from images quickly.
+A modular command-line tool that extracts dominant color palettes from images using K-means clustering. Perfect for designers, developers, or anyone who needs to pull colors from images quickly.
 
 ## What it does
 
@@ -19,6 +19,22 @@ This tool analyzes any image (local file or URL) and extracts its most dominant 
 ![Image Palette Extractor Demo](screenshot.png)
 
 *Extracting 7 dominant colors from the test image above*
+
+## Project Structure
+
+The codebase is organized into focused, reusable modules:
+
+```
+Image-Palette-Extractor/
+├── main.py           # Entry point - orchestrates the application flow
+├── cli.py            # Command-line interface and user interaction
+├── color_utils.py    # Color conversion functions (RGB to Hue/Saturation/Brightness/Hex)
+├── image_utils.py    # Image processing and K-means clustering
+├── requirements.txt  # Python dependencies
+└── Test_Images/      # Sample images for testing
+```
+
+This modular structure makes the code easy to maintain, test, and extend with new features.
 
 ## Features
 
@@ -119,7 +135,7 @@ Enter number of colors to reduce the image to (1-20): 7
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.8+
 - PIL (Pillow)
 - NumPy
 - scikit-learn
