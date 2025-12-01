@@ -1,11 +1,13 @@
 from PIL import Image
 import numpy as np
-from sklearn.cluster import KMeans
 import requests
 from io import BytesIO
-import colorsys
 import json
 import os
+
+# Import functions from util files
+from color_utils import rgb_to_hex, rgb_to_hue, rgb_to_saturation, rgb_to_brightness
+from image_utils import display_image_in_terminal, get_clusters
 
 # Try to import pyperclip for clipboard functionality
 try:
@@ -13,72 +15,6 @@ try:
     PYPERCLIP_AVAILABLE = True
 except ImportError:
     PYPERCLIP_AVAILABLE = False
-
-# Try to import climage for terminal image display
-try:
-    from climage import convert
-    CLIMAGE_AVAILABLE = True
-except ImportError:
-    CLIMAGE_AVAILABLE = False
-
-# Function to convert RGB color to hue value for sorting
-def rgb_to_hue(color):
-    r, g, b = color
-    # Normalize RGB values to 0-1 range (colorsys expects this)
-    r, g, b = r / 255.0, g / 255.0, b / 255.0
-    # Convert to HSV and extract hue (h is between 0-1)
-    h = colorsys.rgb_to_hsv(r, g, b)[0]
-    return h
-
-# Function to covert RGB to saturation value for sorting
-def rgb_to_saturation(color):
-    r, g, b = color
-    # Normalize RGB values to 0-1 range (colorsys expects this)
-    r, g, b = r / 255.0, g / 255.0, b / 255.0
-    # Convert to HSV and extract saturation (s is between 0-1)
-    s = colorsys.rgb_to_hsv(r, g, b)[1]
-    return s
-
-# Function to convert RGB to brightness value for sorting
-def rgb_to_brightness(color):
-    r, g, b = color
-    # Normalize RGB values to 0-1 range (colorsys expects this)
-    r, g, b = r / 255.0, g / 255.0, b / 255.0
-    # Convert to HSV and extract value/brightness (v is between 0-1)
-    v = colorsys.rgb_to_hsv(r, g, b)[2]
-    return v
-
-# Function to convert RGB to Hex
-def rgb_to_hex(colors):
-    hex_colors = []
-    for color in colors:
-        r, g, b = color
-        hex_color = f"#{r:02X}{g:02X}{b:02X}"
-        hex_colors.append(hex_color)
-    return hex_colors
-
-# Function to display image in terminal if climage is available
-def display_image_in_terminal(img):
-    if CLIMAGE_AVAILABLE:
-        try:
-            buffer = BytesIO()
-            img.save(buffer, format="PNG")
-            buffer.seek(0)
-            output = convert(buffer, width=60, is_unicode=True)
-            print("Resized image preview:")
-            print(output)
-        except Exception as e:
-            print(f"Could not display image in terminal: {e}")
-    else:
-        print("climage module not available. Install climage with: pip install climage")
-
-# Function to generate clusters
-def get_clusters(pixels, num_colors):
-    # Perform KMeans clustering to reduce the number of colors
-    kmeans = KMeans(n_clusters=num_colors, random_state=42).fit(pixels)
-    # Get the cluster centers (the representative colors) as integers (normally returns floats)
-    colors = kmeans.cluster_centers_.astype(int)
-    return colors
 
 # Main app loop
 while True:
