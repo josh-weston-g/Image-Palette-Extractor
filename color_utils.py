@@ -9,7 +9,7 @@ def rgb_to_hue(color):
     h = colorsys.rgb_to_hsv(r, g, b)[0]
     return h
 
-# Function to covert RGB to saturation value for sorting
+# Function to convert RGB to saturation value for sorting
 def rgb_to_saturation(color):
     r, g, b = color
     # Normalize RGB values to 0-1 range (colorsys expects this)
