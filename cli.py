@@ -252,6 +252,9 @@ def handle_color_options(colors, num_colors, pixels):
                                 except ValueError:
                                     print("\033[91mInvalid input. Please enter a number between 0.0 and 1.0.\033[0m")
                                     continue
+                                except KeyboardInterrupt:
+                                    print("\nProcess interrupted by user. Exiting.")
+                                    exit(0)
                                 # Validate brightness values are between 0.0 and 1.0 and min < max
                                 if not (0.0 <= min_brightness <= 1.0) or not (0.0 <= max_brightness <= 1.0):
                                     print("\033[91mBrightness values must be between 0.0 and 1.0.\033[0m") # red
