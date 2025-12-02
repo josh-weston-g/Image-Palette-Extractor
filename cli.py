@@ -13,7 +13,7 @@ def get_image_from_user():
         try:
             image_path = input("\nEnter image file path or URL: ")
             # Check if input is a URL
-            if image_path.startswith(("https://", "http://")):
+            if image_path.startswith(("https://", "http://", "ftp://")):
                 print("\nDownloading image from URL...")
                 response = requests.get(image_path)
                 response.raise_for_status() # Raise error for bad responses
