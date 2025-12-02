@@ -49,7 +49,7 @@ def get_color_count():
 def handle_color_options(colors, num_colors, pixels):
     # Display colors and handle user options menu.
     # Import dependencies inside function to avoid circular imports
-    from color_utils import rgb_to_hex, rgb_to_hue, rgb_to_saturation, rgb_to_brightness
+    from color_utils import rgb_to_hex, rgb_to_hue, rgb_to_saturation, rgb_to_brightness, apply_sort
     from image_utils import get_clusters
     import json
     
@@ -210,12 +210,7 @@ def handle_color_options(colors, num_colors, pixels):
                 # Regenerate colors with new number
                 colors = get_clusters(pixels, num_colors)
                 # Re-apply current sort method
-                if current_sort == "hue":
-                    colors = sorted(colors, key=rgb_to_hue)
-                elif current_sort == "saturation":
-                    colors = sorted(colors, key=rgb_to_saturation)
-                elif current_sort == "brightness":
-                    colors = sorted(colors, key=rgb_to_brightness)
+                colors = apply_sort(colors, current_sort)
                 print("\033[92m\nNumber of colors updated.\033[0m")
                 continue
 
@@ -255,12 +250,7 @@ def handle_color_options(colors, num_colors, pixels):
 
                     colors = get_clusters(filtered_pixels, num_colors)
                     # Re-apply current sort method
-                    if current_sort == "hue":
-                        colors = sorted(colors, key=rgb_to_hue)
-                    elif current_sort == "saturation":
-                        colors = sorted(colors, key=rgb_to_saturation)
-                    elif current_sort == "brightness":
-                        colors = sorted(colors, key=rgb_to_brightness)
+                    colors = apply_sort(colors, current_sort)
                     is_filtered = True
                     print("\033[92m\nColors filtered and updated.\033[0m")
                     continue
