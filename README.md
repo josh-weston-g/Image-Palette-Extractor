@@ -99,8 +99,8 @@ The tool will guide you through:
 python main.py
 ```
 ```
-Enter path to image file or URL: https://example.com/wallpaper.jpg
-Enter number of colors to reduce the image to (1-20): 5
+Enter image file path or URL: https://example.com/wallpaper.jpg
+Enter number of colors to extract (1-20): 5
 ```
 
 ### Local file
@@ -108,8 +108,8 @@ Enter number of colors to reduce the image to (1-20): 5
 python main.py
 ```
 ```
-Enter path to image file or URL: /path/to/your/image.png
-Enter number of colors to reduce the image to (1-20): 7
+Enter image file path or URL: /path/to/your/image.png
+Enter number of colors to extract (1-20): 7
 ```
 
 ### Output formats
