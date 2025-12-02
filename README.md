@@ -8,7 +8,7 @@ A modular command-line tool that extracts dominant color palettes from images us
 
 ## What it does
 
-This tool analyzes any image (local file or URL) and extracts its most dominant colors using K-means clustering. The colors can be sorted by hue (rainbow order), saturation, or brightness, making it easy to create harmonious color schemes that suit your needs. You can export colors in multiple formats: RGB, Hex, or RGBA with custom opacity.
+This tool analyzes any image (local file or URL) and extracts its most dominant colors using K-means clustering with the option to filter out extremely dark/bright colors. The colors can be sorted by hue (rainbow order), saturation, or brightness, making it easy to create harmonious color schemes that suit your needs. You can export colors in multiple formats: RGB, Hex, or RGBA with custom opacity.
 
 ## Demo
 
