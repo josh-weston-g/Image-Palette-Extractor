@@ -40,6 +40,7 @@ This modular structure makes the code easy to maintain, test, and extend with ne
 
 - 🎨 **Extract 1-20 dominant colors** from any image
 - 🌈 **Flexible color sorting** - sort by hue (rainbow order), saturation, or brightness
+- 🎯 **Smart color filtering** - exclude very dark or very light colors from extraction
 - 📋 **Multiple export formats**:
   - RGB values: `(224, 153, 195), (158, 79, 116), ...`
   - Hex codes: `#E099C3, #9E4F74, ...`
@@ -85,6 +86,7 @@ The tool will guide you through:
 4. Choose what to do:
    - Reverse the color order
    - Sort by hue, saturation, or brightness
+   - Filter dark/bright colors (exclude very dark or very light colors)
    - Copy RGB values to clipboard
    - Copy Hex values to clipboard
    - Convert to RGBA JSON format (with custom opacity)

@@ -64,6 +64,10 @@ def handle_color_options(colors, num_colors, pixels):
     current_sort = "hue"
     colors = sorted(colors, key=rgb_to_hue)
 
+    # Store original colors for reversing filter
+    original_colors = None
+    is_filtered = False
+
     # Clear the screen before displaying options
     clear_screen()
     
@@ -93,7 +97,13 @@ def handle_color_options(colors, num_colors, pixels):
             option4_text = "4. Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "4. Copy RGB values to clipboard \033[91m(not active)\033[0m"
             option5_text = "5. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "5. Copy Hex values to clipboard \033[91m(not active)\033[0m"
 
-            options = input(f"\nOptions: \n\n\033[1m--- Color Manipulation ---\033[0m\n1. Reverse colour order \n{option2_text} \n{option3_text} \n\n\033[1m--- Export/Copy ---\033[0m\n{option4_text} \n{option5_text} \n6. Convert to RGBA JSON format \n\n\033[1m--- Modify Extraction ---\033[0m\n7. Change number of colours \n\nEnter choice (1-7) or press enter to continue: ")
+            # Dynamically adjust options based on filter state
+            if is_filtered:
+                option8_text = "8. Remove color filtering"
+            else:
+                option8_text = "8. Filter dark/bright colours"
+
+            options = input(f"\nOptions: \n\n\033[1m--- Color Manipulation ---\033[0m\n1. Reverse colour order \n{option2_text} \n{option3_text} \n\n\033[1m--- Export/Copy ---\033[0m\n{option4_text} \n{option5_text} \n6. Convert to RGBA JSON format \n\n\033[1m--- Modify Extraction ---\033[0m\n7. Change number of colours \n{option8_text} \n\nEnter choice (1-8) or press enter to continue: ")
             
             if options == '1':
                 # Reverse color order
@@ -208,6 +218,52 @@ def handle_color_options(colors, num_colors, pixels):
                     colors = sorted(colors, key=rgb_to_brightness)
                 print("\033[92m\nNumber of colors updated.\033[0m")
                 continue
+
+            elif options == "8":
+                # Filter dark/bright colors
+                # Remove filtering if already applied
+                if is_filtered:
+                    clear_screen()
+                    colors = original_colors
+                    is_filtered = False
+                    print("\033[92m\nColor filtering removed. Original colors restored.\033[0m") # green
+                    continue
+                else:
+                    # Store original colors before filtering
+                    original_colors = colors
+
+                    from image_utils import filter_extreme_pixels
+                    #! Add filter brightness options
+                    while True:
+                        try:
+                            filter_choice = input("\n Filter options: \n1. Filter dark colors \n2. Filter bright colors \n3. Filter both dark and bright colors \n\nEnter choice (1-3): ")
+                            if filter_choice not in ['1', '2', '3']:
+                                print("Please enter 1, 2, or 3.")
+                                continue
+                            break
+                        except KeyboardInterrupt:
+                            print("\nProcess interrupted by user. Exiting.")
+                            exit(0)
+                        
+                    clear_screen()
+                    if filter_choice == '1':
+                        filtered_pixels = filter_extreme_pixels(pixels, filter_dark=True, filter_light=False)
+                    elif filter_choice == '2':
+                        filtered_pixels = filter_extreme_pixels(pixels, filter_dark=False, filter_light=True)
+                    elif filter_choice == '3':
+                        filtered_pixels = filter_extreme_pixels(pixels, filter_dark=True, filter_light=True)
+
+                    colors = get_clusters(filtered_pixels, num_colors)
+                    # Re-apply current sort method
+                    if current_sort == "hue":
+                        colors = sorted(colors, key=rgb_to_hue)
+                    elif current_sort == "saturation":
+                        colors = sorted(colors, key=rgb_to_saturation)
+                    elif current_sort == "brightness":
+                        colors = sorted(colors, key=rgb_to_brightness)
+                    is_filtered = True
+                    print("\033[92m\nColors filtered and updated.\033[0m")
+                    continue
             
             elif options == '':
                 # User pressed enter - exit options menu
@@ -215,7 +271,7 @@ def handle_color_options(colors, num_colors, pixels):
             
             else:
                 clear_screen()
-                print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7 or press enter to skip.")
+                print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8 or press enter to skip.")
                 
         except KeyboardInterrupt:
             print("\nProcess interrupted by user. Exiting.")
