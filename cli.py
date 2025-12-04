@@ -235,47 +235,46 @@ def handle_color_options(colors, num_colors, pixels):
                             if filter_choice not in ['1', '2', '3']:
                                 print("\033[91mPlease enter 1, 2, or 3.\033[0m")
                                 continue
-
-                            # Get min and max brightness thresholds and validate user input - defaults 0.15 and 0.85 respectively
-                            min_brightness = 0.15 # Default min brightness
-                            max_brightness = 0.85 # Default max brightness
-
-                            while True:
-                                try:
-                                    if filter_choice == '1':
-                                        min_brightness = float(input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15): ") or "0.15" )
-                                    elif filter_choice == '2':
-                                        max_brightness = float(input("Enter maximum brightness for bright color filtering (0.0 to 1.0, default 0.85): ") or "0.85")
-                                    elif filter_choice == '3':
-                                        min_brightness = float(input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15): ") or "0.15")
-                                        max_brightness = float(input("Enter maximum brightness for bright color filtering (0.0 to 1.0, default 0.85): ") or "0.85")
-                                except ValueError:
-                                    print("\033[91mInvalid input. Please enter a number between 0.0 and 1.0.\033[0m")
-                                    continue
-                                except KeyboardInterrupt:
-                                    print("\nProcess interrupted by user. Exiting.")
-                                    exit(0)
-                                # Validate brightness values are between 0.0 and 1.0 and min < max
-                                if not (0.0 <= min_brightness <= 1.0) or not (0.0 <= max_brightness <= 1.0):
-                                    print("\033[91mBrightness values must be between 0.0 and 1.0.\033[0m") # red
-                                    continue
-                                if min_brightness >= max_brightness:
-                                    print("\033[91mMinimum brightness must be less than maximum brightness.\033[0m") # red
-                                    continue
-                                break
-
                             break
                         except KeyboardInterrupt:
                             print("\nProcess interrupted by user. Exiting.")
                             exit(0)
                         
+                    # Get min and max brightness thresholds and validate user input - defaults 0.15 and 0.85 respectively
+                    min_brightness = 0.15 # Default min brightness
+                    max_brightness = 0.85 # Default max brightness
+                    filter_dark = False # Default no dark filtering
+                    filter_light = False # Default no light filtering
+                    while True:
+                        try:
+                            if filter_choice == '1':
+                                min_brightness = float(input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15): ") or "0.15" )
+                                filter_dark = True
+                            elif filter_choice == '2':
+                                max_brightness = float(input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85): ") or "0.85" )
+                                filter_light = True
+                            elif filter_choice == '3':
+                                min_brightness = float(input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15): ") or "0.15" )
+                                max_brightness = float(input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85): ") or "0.85" )
+                                filter_dark = True
+                                filter_light = True
+                        except ValueError:
+                            print("\033[91mInvalid input. Please enter a number between 0.0 and 1.0.\033[0m")
+                            continue
+                        except KeyboardInterrupt:
+                            print("\nProcess interrupted by user. Exiting.")
+                            exit(0)
+                        # Validate brightness values are between 0.0 and 1.0 and min < max
+                        if not (0.0 <= min_brightness <= 1.0) or not (0.0 <= max_brightness <= 1.0):
+                            print("\033[91mBrightness values must be between 0.0 and 1.0.\033[0m") # red
+                            continue
+                        if min_brightness >= max_brightness:
+                            print("\033[91mMinimum brightness must be less than maximum brightness.\033[0m") # red
+                            continue
+                        break
+                    # Regenerate colors with filtered pixels
                     clear_screen()
-                    if filter_choice == '1':
-                        filtered_pixels = filter_extreme_pixels(pixels, filter_dark=True, filter_light=False, min_brightness=min_brightness, max_brightness=max_brightness)
-                    elif filter_choice == '2':
-                        filtered_pixels = filter_extreme_pixels(pixels, filter_dark=False, filter_light=True, min_brightness=min_brightness, max_brightness=max_brightness)
-                    elif filter_choice == '3':
-                        filtered_pixels = filter_extreme_pixels(pixels, filter_dark=True, filter_light=True, min_brightness=min_brightness, max_brightness=max_brightness)
+                    filtered_pixels = filter_extreme_pixels(pixels, filter_dark=filter_dark, filter_light=filter_light, min_brightness=min_brightness, max_brightness=max_brightness)
                     colors = get_clusters(filtered_pixels, num_colors)
                     # Re-apply current sort method
                     colors = apply_sort(colors, current_sort)
