@@ -22,19 +22,20 @@ This tool analyzes any image (local file or URL) and extracts its most dominant 
 
 ## Project Structure
 
-The codebase is organized into focused, reusable modules:
+The codebase uses an object-oriented architecture with focused, reusable modules:
 
 ```
 Image-Palette-Extractor/
-├── main.py           # Entry point - orchestrates the application flow
-├── cli.py            # Command-line interface and user interaction
-├── color_utils.py    # Color conversion functions (RGB to Hue/Saturation/Brightness/Hex)
-├── image_utils.py    # Image processing and K-means clustering
-├── requirements.txt  # Python dependencies
-└── Test_Images/      # Sample images for testing
+├── main.py            # Entry point - orchestrates the application flow
+├── image_palette.py   # ImagePalette class - core palette extraction and manipulation
+├── cli.py             # Command-line interface and user interaction
+├── image_utils.py     # Image processing utilities (filtering, display)
+├── color_utils.py     # Color conversion functions (RGB to Hue/Saturation/Brightness/Hex)
+├── requirements.txt   # Python dependencies
+└── Test_Images/       # Sample images for testing
 ```
 
-This modular structure makes the code easy to maintain, test, and extend with new features.
+The `ImagePalette` class encapsulates all color palette operations, making the code easy to maintain, test, and extend with new features.
 
 ## Features
 
