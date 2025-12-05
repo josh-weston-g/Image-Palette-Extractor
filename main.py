@@ -1,30 +1,20 @@
-# Import functions from util files
-from image_utils import get_clusters, process_image, extract_pixels
-from cli import clear_screen, get_image_from_user, get_color_count, handle_color_options, ask_continue
+from cli import clear_screen, load_image, get_color_count, handle_color_options, ask_continue
+from image_palette import ImagePalette
 
 # Main app loop
 while True:
-    # Clear the terminal at the start of each loop
     clear_screen()
-    print("=== Image Color Extractor ===")
+    print("=== Image Color Palette Extractor ===")
+
+    # Get image from user
+    image = load_image()
     
-    # Get image from user (file path or URL)
-    im = get_image_from_user()
-
-    # Process the image (display info -> resize -> convert to RGB -> display resized image in terminal)
-    im = process_image(im)
-
-    # Extract pixel data from image
-    pixels = extract_pixels(im)
-
-    # Get number of colors to reduce the image to
+    # Now get color count and create palette
     num_colors = get_color_count()
+    palette = ImagePalette(image, num_colors)
 
-    # Get the clustered colors
-    colors = get_clusters(pixels, num_colors)
-    
     # Handle color options menu
-    handle_color_options(colors, num_colors, pixels)
+    handle_color_options(palette)
 
     # Ask user if they want to process another image
     if not ask_continue():

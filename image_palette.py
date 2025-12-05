@@ -1,6 +1,3 @@
-from PIL import Image
-import requests
-from io import BytesIO
 import numpy as np
 from sklearn.cluster import KMeans
 
@@ -12,17 +9,17 @@ class ImagePalette:
     and providing methods to manipulate and export the color palette.
     """
 
-    def __init__(self, image_source, num_colors):
+    def __init__(self, image, num_colors):
         """
-        Initialize the ImagePalette with an image source and number of colors.
+        Initialize the ImagePalette with a PIL Image and number of colors.
 
-        :param image_source: Path to the image file or URL.
+        :param image: PIL Image object.
         :param num_colors: Number of dominant colors to extract.
         """
-        #Store number of colors
+        # Store number of colors
         self.num_colors = num_colors
-        # Load image from path/url
-        self.image = self._load_image(image_source)
+        # Store the image
+        self.image = image
         # Process image (resize, convert to RGB, display)
         self.image = self._process_image()
         # Extract pixel data as numpy array
@@ -37,33 +34,6 @@ class ImagePalette:
         self.is_filtered = False
         self.original_colors = None
 
-    def _load_image(self, image_source):
-        """
-        Load an image from a file path or URL.
-
-        :param image_source: String containing the file path or URL.
-
-        :return: PIL Image object.
-
-        :raises: Exception if the image cannot be loaded.
-        """
-        try:
-            # Check if image is a URL
-            if image_source.startswith(("http://", "https://", "ftp://")):
-                print("\nDownloading image from URL...")
-                response = requests.get(image_source)
-                response.raise_for_status() # Raise error for bad responses
-                return Image.open(BytesIO(response.content))
-            else:
-                # Load image from local file path
-                return Image.open(image_source)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Image file not found: {image_source}")
-        except requests.exceptions.RequestException as e:
-            raise Exception(f"Error downloading image: {e}")
-        except Exception as e:
-            raise Exception(f"Error loading image: {e}")
-        
     def _process_image(self):
         """
         Process the loaded image: resize, convert to RGB, and display
