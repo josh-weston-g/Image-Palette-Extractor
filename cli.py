@@ -92,10 +92,7 @@ def handle_color_options(palette):
             option5_text = "5. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "5. Copy Hex values to clipboard \033[91m(not active)\033[0m"
 
             # Dynamically adjust options based on filter state
-            if palette.is_filtered:
-                option8_text = "8. Remove color filtering"
-            else:
-                option8_text = "8. Filter dark/bright colours"
+            option8_text = "8. Remove color filtering" if palette.is_filtered else "8. Filter dark/bright colours"
 
             options = input(f"\nOptions: \n\n\033[1m--- Color Manipulation ---\033[0m\n1. Reverse colour order \n{option2_text} \n{option3_text} \n\n\033[1m--- Export/Copy ---\033[0m\n{option4_text} \n{option5_text} \n6. Convert to RGBA JSON format \n\n\033[1m--- Modify Extraction ---\033[0m\n7. Change number of colours \n{option8_text} \n\nEnter choice (1-8) or press enter to continue: ")
             
