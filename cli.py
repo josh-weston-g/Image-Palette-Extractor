@@ -87,14 +87,17 @@ def handle_color_options(palette):
                 option2_text = "2. Sort by saturation"
                 option3_text = "3. Sort by hue"
 
+            # Dynamically adjust options based on complementary state
+            option4_text = "4. Restore original colors" if palette.is_complementary else "4. Convert to complementary colors"
+
             # Dynamically adjust options based on pyperclip availability
-            option4_text = "4. Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "4. Copy RGB values to clipboard \033[91m(not active)\033[0m"
-            option5_text = "5. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "5. Copy Hex values to clipboard \033[91m(not active)\033[0m"
+            option5_text = "5. Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "5. Copy RGB values to clipboard \033[91m(not active)\033[0m"
+            option6_text = "6. Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "6. Copy Hex values to clipboard \033[91m(not active)\033[0m"
 
             # Dynamically adjust options based on filter state
-            option8_text = "8. Remove color filtering" if palette.is_filtered else "8. Filter dark/bright colours"
+            option9_text = "9. Remove color filtering" if palette.is_filtered else "9. Filter dark/bright colours"
 
-            options = input(f"\nOptions: \n\n\033[1m--- Color Manipulation ---\033[0m\n1. Reverse colour order \n{option2_text} \n{option3_text} \n\n\033[1m--- Export/Copy ---\033[0m\n{option4_text} \n{option5_text} \n6. Convert to RGBA JSON format \n\n\033[1m--- Modify Extraction ---\033[0m\n7. Change number of colours \n{option8_text} \n\nEnter choice (1-8) or press enter to continue: ")
+            options = input(f"\nOptions: \n\n\033[1m--- Color Manipulation ---\033[0m\n1. Reverse colour order \n{option2_text} \n{option3_text} \n{option4_text} \n\n\033[1m--- Export/Copy ---\033[0m\n{option5_text} \n{option6_text} \n7. Convert to RGBA JSON format \n\n\033[1m--- Modify Extraction ---\033[0m\n8. Change number of colours \n{option9_text} \n\nEnter choice (1-9) or press enter to continue: ")
             
             if options == '1':
                 # Reverse color order
@@ -128,6 +131,17 @@ def handle_color_options(palette):
                 continue
             
             elif options == '4':
+                # Toggle complementary colors
+                clear_screen()
+                if palette.is_complementary:
+                    palette.remove_complementary()
+                    print("\033[92m\nRestored original colors.\033[0m")
+                else:
+                    palette.to_complementary()
+                    print("\033[92m\nConverted to complementary colors.\033[0m")
+                continue
+            
+            elif options == '5':
                 # Copy RGB values to clipboard
                 if not PYPERCLIP_AVAILABLE:
                     clear_screen()
@@ -142,7 +156,7 @@ def handle_color_options(palette):
                     print(f"\033[91mFailed to copy RGB values to clipboard: {e}\033[0m")
                 continue
             
-            elif options == '5':
+            elif options == '6':
                 # Copy Hex values to clipboard
                 if not PYPERCLIP_AVAILABLE:
                     clear_screen()
@@ -156,7 +170,7 @@ def handle_color_options(palette):
                     print(f"\033[91mFailed to copy Hex values to clipboard: {e}\033[0m")
                 continue
 
-            elif options == "6":
+            elif options == "7":
                 # Convert to RGBA JSON format
                 while True:
                     try:
@@ -177,7 +191,7 @@ def handle_color_options(palette):
                 print("\033[0m")
                 continue
 
-            elif options == "7":
+            elif options == "8":
                 # Change number of colors
                 while True:
                     try:
@@ -197,7 +211,7 @@ def handle_color_options(palette):
                 print("\033[92m\nNumber of colors updated.\033[0m")
                 continue
 
-            elif options == "8":
+            elif options == "9":
                 # Filter dark/bright colors
                 # Remove filtering if already applied
                 if palette.is_filtered:
@@ -261,7 +275,7 @@ def handle_color_options(palette):
             
             else:
                 clear_screen()
-                print("\033[91mInvalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8 or press enter to skip.\033[0m")
+                print("\033[91mInvalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, 9 or press enter to skip.\033[0m")
                 
         except KeyboardInterrupt:
             print("\nProcess interrupted by user. Exiting.")

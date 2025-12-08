@@ -35,3 +35,12 @@ def rgb_to_hex(colors):
         hex_color = f"#{r:02X}{g:02X}{b:02X}"
         hex_colors.append(hex_color)
     return hex_colors
+
+# Function to get complementary color
+def rgb_to_complement(color):
+    r, g, b = color
+    r, g, b = r / 255.0, g / 255.0, b / 255.0
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+    complement_h = (h + 0.5) % 1.0
+    r_c, g_c, b_c = colorsys.hsv_to_rgb(complement_h, s, v)
+    return (int(r_c * 255), int(g_c * 255), int(b_c * 255))

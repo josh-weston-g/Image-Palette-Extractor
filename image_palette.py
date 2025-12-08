@@ -30,9 +30,11 @@ class ImagePalette:
         self.current_sort = "hue"
         # Apply initial sort
         self.sort_by("hue")
-        # Initialise filter state tracking
+        # Initialise state tracking for filtering and complementary colors
         self.is_filtered = False
-        self.original_colors = None
+        self.is_complementary = False
+        self.original_unfiltered_colors = None # For filter restoration
+        self.original_non_complementary_colors = None # For complementary color restoration
 
     def _process_image(self):
         """
@@ -169,9 +171,17 @@ class ImagePalette:
         """
         from image_utils import filter_extreme_pixels
 
+        # If complementary is active, turn it off and restore original colors
+        if self.is_complementary:
+            # Restore original colors before filtering
+            if self.original_non_complementary_colors is not None:
+                self.colors = self.original_non_complementary_colors
+            self.is_complementary = False
+            self.original_non_complementary_colors = None
+
         if not self.is_filtered:
             # Store original pixels before filtering
-            self.original_colors = self.colors.copy()
+            self.original_unfiltered_colors = self.colors.copy()
 
         # Filter pixels
         filtered_pixels = filter_extreme_pixels(
@@ -194,8 +204,37 @@ class ImagePalette:
         """
         Remove any applied filters and restore the original color palette.
         """
-        if self.is_filtered and self.original_colors is not None:
-            self.colors = self.original_colors
+        if self.is_filtered and self.original_unfiltered_colors is not None:
+            self.colors = self.original_unfiltered_colors
             self.sort_by(self.current_sort)
             self.is_filtered = False
-            self.original_colors = None
+            self.original_unfiltered_colors = None
+            # Also reset complementary state
+            self.is_complementary = False
+            self.original_non_complementary_colors = None
+
+    def to_complementary(self):
+        """
+        Convert the current colors to their complementary colors.
+        """
+        from color_utils import rgb_to_complement
+
+        if not self.is_complementary:
+            # Store original colors before conversion
+            self.original_non_complementary_colors = self.colors.copy()
+        
+        # Convert each color to its complementary color and convert back to numpy array
+        self.colors = np.array([rgb_to_complement(color) for color in self.colors])
+        # Re-apply current sort
+        self.sort_by(self.current_sort)
+        self.is_complementary = True
+
+    def remove_complementary(self):
+        """
+        Restore the original colors before complementary conversion.
+        """
+        if self.is_complementary and self.original_non_complementary_colors is not None:
+            self.colors = self.original_non_complementary_colors
+            self.sort_by(self.current_sort)
+            self.is_complementary = False
+            self.original_non_complementary_colors = None
