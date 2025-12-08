@@ -159,6 +159,14 @@ class ImagePalette:
         # Re-apply current sort
         self.sort_by(self.current_sort)
 
+        # Remove any filtering if active and complementary state
+        if self.is_filtered:
+            self.is_filtered = False
+            self.original_unfiltered_colors = None
+        if self.is_complementary:
+            self.is_complementary = False
+            self.original_non_complementary_colors = None
+
     def filter_colors(self, filter_dark=True, filter_light=True, min_brightness=0.15, max_brightness=0.85):
         """
         Filter out near-black and/or near-white colors from the pixel data
