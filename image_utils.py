@@ -10,6 +10,11 @@ except ImportError:
     CLIMAGE_AVAILABLE = False
 
 def display_image_in_terminal(img):
+    """
+    Display image preview in terminal using climage if available.
+    
+    :param img: PIL Image object to display.
+    """
     if CLIMAGE_AVAILABLE:
         try:
             buffer = BytesIO()
