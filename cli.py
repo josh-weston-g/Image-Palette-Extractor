@@ -174,7 +174,11 @@ def handle_color_options(palette):
                 # Convert to RGBA JSON format
                 while True:
                     try:
-                        opacity = float(input("\nEnter opacity value (0.0 to 1.0, default 0.15): ") or 0.15)
+                        opacity = input("\nEnter opacity value (0.0 to 1.0, default 0.15) or 'c' to cancel: ") or 0.15
+                        # Check for cancel
+                        if opacity == "c":
+                            break
+                        opacity = float(opacity)
                         if opacity < 0.0 or opacity > 1.0:
                             print("\033[91mPlease enter a number between 0.0 and 1.0.\033[0m")
                             continue
@@ -185,6 +189,8 @@ def handle_color_options(palette):
                         print("\nProcess interrupted by user. Exiting.")
                         exit(0)
                 clear_screen()
+                if opacity == "c":
+                    continue
                 colors_list = palette.get_rgba_list(opacity)
                 print("\n\033[96mExtracted colors (RGBA):")
                 print(json.dumps(colors_list, indent=2))
@@ -195,7 +201,11 @@ def handle_color_options(palette):
                 # Change number of colors
                 while True:
                     try:
-                        num_colors = int(input("\nEnter new number of colors to extract from the image (1-20): "))
+                        num_colors = input("\nEnter new number of colors to extract from the image (1-20) or 'c' to cancel: ")
+                        # Check for cancel
+                        if num_colors == "c":
+                            break
+                        num_colors = int(num_colors)
                         if num_colors < 1 or num_colors > 20:
                             print("\033[91mPlease enter a number between 1 and 20.\033[0m")
                             continue
@@ -206,6 +216,8 @@ def handle_color_options(palette):
                         print("\nProcess interrupted by user. Exiting.")
                         exit(0)
                 clear_screen()
+                if num_colors == "c":
+                    continue
                 # Regenerate colors with new number
                 palette.extract_palette(num_colors)
                 print("\033[92m\nNumber of colors updated.\033[0m")
@@ -220,33 +232,62 @@ def handle_color_options(palette):
                     print("\033[92m\nColor filtering removed. Original colors restored.\033[0m")
                     continue
                 else:
+                    # Get filter choice
+                    filter_choice = None  # Initialize to track if user cancelled
                     while True:
                         try:
-                            filter_choice = input("\nFilter options: \n1. Filter dark colors \n2. Filter bright colors \n3. Filter both dark and bright colors \n\nEnter choice (1-3): ")
-                            if filter_choice not in ['1', '2', '3']:
+                            filter_choice = input("\nFilter options: \n1. Filter dark colors \n2. Filter bright colors \n3. Filter both dark and bright colors \n\nEnter choice (1-3) or 'c' to cancel: ")
+                            if filter_choice == 'c':
+                                break #exit this loop
+                            elif filter_choice not in ['1', '2', '3']:
                                 print("\033[91mPlease enter 1, 2, or 3.\033[0m")
                                 continue
                             break
                         except KeyboardInterrupt:
                             print("\nProcess interrupted by user. Exiting.")
                             exit(0)
+        
+                    # If user cancelled, skip to next iteration of main options loop
+                    if filter_choice == 'c':
+                        clear_screen()
+                        continue
                         
-                    # Get min and max brightness thresholds and validate user input - defaults 0.15 and 0.85 respectively
-                    min_brightness = 0.15 # Default min brightness
-                    max_brightness = 0.85 # Default max brightness
-                    filter_dark = False # Default no dark filtering
-                    filter_light = False # Default no light filtering
+                    # Get min and max brightness thresholds
+                    min_brightness = 0.15
+                    max_brightness = 0.85
+                    filter_dark = False
+                    filter_light = False
+                    
+                    brightness_cancelled = False  # Flag to track cancellation
                     while True:
                         try:
                             if filter_choice == '1':
-                                min_brightness = float(input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15): ") or "0.15" )
+                                brightness_input = input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15) or 'c' to cancel: ") or "0.15"
+                                if brightness_input == 'c':
+                                    brightness_cancelled = True
+                                    break
+                                min_brightness = float(brightness_input)
                                 filter_dark = True
                             elif filter_choice == '2':
-                                max_brightness = float(input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85): ") or "0.85" )
+                                brightness_input = input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85) or 'c' to cancel: ") or "0.85"
+                                if brightness_input == 'c':
+                                    brightness_cancelled = True
+                                    break
+                                max_brightness = float(brightness_input)
                                 filter_light = True
                             elif filter_choice == '3':
-                                min_brightness = float(input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15): ") or "0.15" )
-                                max_brightness = float(input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85): ") or "0.85" )
+                                min_input = input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15) or 'c' to cancel: ") or "0.15"
+                                if min_input == 'c':
+
+                                    brightness_cancelled = True
+                                    break
+                                min_brightness = float(min_input)
+                                
+                                max_input = input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85) or 'c' to cancel: ") or "0.85"
+                                if max_input == 'c':
+                                    brightness_cancelled = True
+                                    break
+                                max_brightness = float(max_input)
                                 filter_dark = True
                                 filter_light = True
                         except ValueError:
@@ -255,7 +296,8 @@ def handle_color_options(palette):
                         except KeyboardInterrupt:
                             print("\nProcess interrupted by user. Exiting.")
                             exit(0)
-                        # Validate brightness values are between 0.0 and 1.0 and min < max
+                        
+                        # Validate brightness values
                         if not (0.0 <= min_brightness <= 1.0) or not (0.0 <= max_brightness <= 1.0):
                             print("\033[91mBrightness values must be between 0.0 and 1.0.\033[0m")
                             continue
@@ -263,6 +305,12 @@ def handle_color_options(palette):
                             print("\033[91mMinimum brightness must be less than maximum brightness.\033[0m")
                             continue
                         break
+                    
+                    # If user cancelled brightness input, skip filtering
+                    if brightness_cancelled:
+                        clear_screen()
+                        continue
+                    
                     # Filter colors using palette method
                     clear_screen()
                     palette.filter_colors(filter_dark=filter_dark, filter_light=filter_light, min_brightness=min_brightness, max_brightness=max_brightness)
