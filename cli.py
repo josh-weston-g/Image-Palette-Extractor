@@ -65,6 +65,13 @@ def handle_color_options(palette):
     except ImportError:
         PYPERCLIP_AVAILABLE = False
 
+    # Sort rotation mappings
+    SORT_NEXT = {
+        "hue": {"option2": "saturation", "option3": "brightness"},
+        "saturation": {"option2": "hue", "option3": "brightness"},
+        "brightness": {"option2": "saturation", "option3": "hue"}
+    }
+
     # Clear the screen before displaying options
     clear_screen()
     
@@ -77,15 +84,8 @@ def handle_color_options(palette):
         
         try:
             # Dynamically adjust options based on current sort method
-            if palette.current_sort == "hue":
-                option2_text = "2. Sort by saturation"
-                option3_text = "3. Sort by brightness"
-            elif palette.current_sort == "saturation":
-                option2_text = "2. Sort by hue"
-                option3_text = "3. Sort by brightness"
-            elif palette.current_sort == "brightness":
-                option2_text = "2. Sort by saturation"
-                option3_text = "3. Sort by hue"
+            option2_text  = f"2. Sort by {SORT_NEXT[palette.current_sort]['option2']}"
+            option3_text  = f"3. Sort by {SORT_NEXT[palette.current_sort]['option3']}"
 
             # Dynamically adjust options based on complementary state
             option4_text = "4. Restore original colors" if palette.is_complementary else "4. Convert to complementary colors"
@@ -107,25 +107,15 @@ def handle_color_options(palette):
                 continue
             
             elif options == '2':
-                # Sort by first alternative method
-                if palette.current_sort == "hue":
-                    palette.sort_by("saturation")
-                elif palette.current_sort == "saturation":
-                    palette.sort_by("hue")
-                elif palette.current_sort == "brightness":
-                    palette.sort_by("saturation")
+                next_sort = SORT_NEXT[palette.current_sort]['option2']
+                palette.sort_by(next_sort)
                 clear_screen()
                 print(f"\033[92m\nColors sorted by {palette.current_sort}.\033[0m")
                 continue
             
             elif options == '3':
-                # Sort by second alternative method
-                if palette.current_sort == "hue":
-                    palette.sort_by("brightness")
-                elif palette.current_sort == "saturation":
-                    palette.sort_by("brightness")
-                elif palette.current_sort == "brightness":
-                    palette.sort_by("hue")
+                next_sort = SORT_NEXT[palette.current_sort]['option3']
+                palette.sort_by(next_sort)
                 clear_screen()
                 print(f"\033[92m\nColors sorted by {palette.current_sort}.\033[0m")
                 continue
@@ -278,11 +268,9 @@ def handle_color_options(palette):
                             elif filter_choice == '3':
                                 min_input = input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15) or 'c' to cancel: ") or "0.15"
                                 if min_input == 'c':
-
                                     brightness_cancelled = True
                                     break
                                 min_brightness = float(min_input)
-                                
                                 max_input = input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85) or 'c' to cancel: ") or "0.85"
                                 if max_input == 'c':
                                     brightness_cancelled = True
@@ -332,10 +320,7 @@ def handle_color_options(palette):
 def ask_continue():
     # Ask user if they want to process another image
     try:
-        continue_choice = input("\nProcess another image? (y/n): ").lower()
-        if continue_choice != 'y':
-            return False
-        return True
+        return input("\nProcess another image? (y/n): ").strip().lower() == 'y'
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting.")
         exit(0)
