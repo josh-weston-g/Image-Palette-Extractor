@@ -35,14 +35,3 @@ def rgb_to_hex(colors):
         hex_color = f"#{r:02X}{g:02X}{b:02X}"
         hex_colors.append(hex_color)
     return hex_colors
-
-# Function to apply sort depending on current sort - used to re-apply sort after colours are modified
-def apply_sort(colors, current_sort):
-    if current_sort == "hue":
-        return sorted(colors, key=rgb_to_hue)
-    elif current_sort == "saturation":
-        return sorted(colors, key=rgb_to_saturation)
-    elif current_sort == "brightness":
-        return sorted(colors, key=rgb_to_brightness)
-    else:
-        return colors # if no sort or unrecognized sort, return original order
