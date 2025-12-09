@@ -89,11 +89,11 @@ The tool will guide you through:
    - Reverse the color order
    - Sort by hue, saturation, or brightness
    - Convert to complementary colors (opposite on the color wheel)
-   - Filter dark/bright colors (exclude very dark or very light colors)
    - Copy RGB values to clipboard
    - Copy Hex values to clipboard
    - Convert to RGBA JSON format (with custom opacity)
    - Change the number of colors
+   - Filter dark/bright colors (exclude very dark or very light colors)
 
 ## Examples
 
@@ -103,7 +103,7 @@ python main.py
 ```
 ```
 Enter image file path or URL: https://example.com/wallpaper.jpg
-Enter number of colors to extract (1-20): 5
+Enter number of colors to extract (1-20): 7
 ```
 
 ### Local file
@@ -145,6 +145,7 @@ Enter number of colors to extract (1-20): 7
 - NumPy
 - scikit-learn
 - requests
+- questionary
 - pyperclip (optional - for clipboard functionality)
 - climage (optional - for terminal image preview)
 
