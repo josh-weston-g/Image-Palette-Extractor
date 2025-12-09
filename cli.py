@@ -4,6 +4,15 @@ import requests
 from io import BytesIO
 import questionary
 
+# Custom style for questionary
+select_style = questionary.Style([
+    ('separator', 'bold fg:ansibrightmagenta'),
+    ('pointer', 'fg:ansibrightcyan bold'),
+    ('highlighted', 'fg:ansibrightcyan bold'),
+    ('selected', 'fg:ansigreen'),
+    ('disabled', 'fg:ansired'),
+])
+
 def clear_screen():
     # Clear the terminal screen
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -16,28 +25,43 @@ def load_image():
     :return: PIL Image object.
     """
     while True:
+        # Ask if url or path
+        print()
+        source_type = questionary.select(
+            "Load image from:",
+            choices=[
+                questionary.Choice("Local file path", value="path"),
+                questionary.Choice("Image URL", value="url")
+            ],
+            style=select_style,
+        ).ask()
+
+        if source_type == None:
+            print("\nExiting the program. Goodbye!")
+            exit(0)
         try:
-            image_source = input("\nEnter image file path or URL: ")
-            
-            # Check if image is a URL
-            if image_source.startswith(("http://", "https://", "ftp://")):
-                print("\nDownloading image from URL...")
-                response = requests.get(image_source)
-                response.raise_for_status() # Raise error for bad responses
+            if source_type == "url":
+                url = questionary.text("Enter image URL:").ask()
+                if url is None:
+                    print("\nExiting the program. Goodbye!")
+                    exit(0)
+                print("\nDownloading image...")
+                response = requests.get(url)
+                response.raise_for_status()
                 return Image.open(BytesIO(response.content))
             else:
-                # Load image from local file path
-                return Image.open(image_source)
-                
+                path = questionary.path("Enter image file path:").ask()
+                if path is None:
+                    print("\nExiting the program. Goodbye!")
+                    exit(0)
+                return Image.open(path)
         except FileNotFoundError:
-            print(f"\033[91mImage file not found: {image_source}\033[0m")
+            print("\033[91mFile not found. Please check the path and try again.\033[0m")
         except requests.exceptions.RequestException as e:
             print(f"\033[91mError downloading image: {e}\033[0m")
-        except KeyboardInterrupt:
-            print("\nProcess interrupted by user. Exiting.")
-            exit(0)
         except Exception as e:
             print(f"\033[91mError loading image: {e}\033[0m")
+
 
 def get_color_count():
     # Prompt user for number of colors to extract
@@ -75,15 +99,6 @@ def handle_color_options(palette):
 
     # Clear the screen before displaying options
     clear_screen()
-    
-    # Custom style for questionary
-    custom_style = questionary.Style([
-        ('separator', 'bold fg:ansibrightmagenta'),
-        ('pointer', 'fg:ansibrightcyan bold'),
-        ('highlighted', 'fg:ansibrightcyan bold'),
-        ('selected', 'fg:ansigreen'),
-        ('disabled', 'fg:ansired'),  # Add this for disabled items
-    ])
 
     while True:
         print(f"\nExtracted {palette.num_colors} colors (sorted by {palette.current_sort}):")
@@ -115,7 +130,7 @@ def handle_color_options(palette):
         options = questionary.select(
             "Select an option:",
             choices=CHOICES,
-            style=custom_style,
+            style=select_style,
         ).ask()
 
         if options == 'reverse':
@@ -242,22 +257,20 @@ def handle_color_options(palette):
                 continue
             else:
                 # Get filter choice
-                filter_choice = None  # Initialize to track if user cancelled
-                while True:
-                    try:
-                        filter_choice = input("\nFilter options: \n1. Filter dark colors \n2. Filter bright colors \n3. Filter both dark and bright colors \n\nEnter choice (1-3) or 'c' to cancel: ")
-                        if filter_choice == 'c':
-                            break #exit this loop
-                        elif filter_choice not in ['1', '2', '3']:
-                            print("\033[91mPlease enter 1, 2, or 3.\033[0m")
-                            continue
-                        break
-                    except KeyboardInterrupt:
-                        print("\nProcess interrupted by user. Exiting.")
-                        exit(0)
-    
-                # If user cancelled, skip to next iteration of main options loop
-                if filter_choice == 'c':
+                print()
+                filter_choice = questionary.select(
+                    "Select filtering option:",
+                    choices=[
+                        questionary.Choice("Filter dark colors", value='dark'),
+                        questionary.Choice("Filter bright colors", value='bright'),
+                        questionary.Choice("Filter both dark and bright colors", value='both'),
+                        questionary.Separator("   "),
+                        questionary.Choice("Cancel", value='cancel')
+                    ],
+                    style=select_style,
+                ).ask()
+
+                if filter_choice == 'cancel':
                     clear_screen()
                     continue
                     
@@ -270,21 +283,21 @@ def handle_color_options(palette):
                 brightness_cancelled = False  # Flag to track cancellation
                 while True:
                     try:
-                        if filter_choice == '1':
+                        if filter_choice == 'dark':
                             brightness_input = input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15) or 'c' to cancel: ") or "0.15"
                             if brightness_input == 'c':
                                 brightness_cancelled = True
                                 break
                             min_brightness = float(brightness_input)
                             filter_dark = True
-                        elif filter_choice == '2':
+                        elif filter_choice == 'bright':
                             brightness_input = input("Enter maximum brightness for light color filtering (0.0 to 1.0, default 0.85) or 'c' to cancel: ") or "0.85"
                             if brightness_input == 'c':
                                 brightness_cancelled = True
                                 break
                             max_brightness = float(brightness_input)
                             filter_light = True
-                        elif filter_choice == '3':
+                        elif filter_choice == 'both':
                             min_input = input("Enter minimum brightness for dark color filtering (0.0 to 1.0, default 0.15) or 'c' to cancel: ") or "0.15"
                             if min_input == 'c':
                                 brightness_cancelled = True

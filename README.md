@@ -39,9 +39,11 @@ The `ImagePalette` class encapsulates all color palette operations, making the c
 
 ## Features
 
-- 🎨 **Extract 1-20 dominant colors** from any image
+- 🎨 **Extract 1-20 dominant colors** from any image using K-means clustering
+- 🖱️ **Interactive menu navigation** - arrow keys and visual selection with questionary
+- 📁 **Smart file selection** - autocomplete for local files or paste URLs
 - 🌈 **Flexible color sorting** - sort by hue (rainbow order), saturation, or brightness
-- 🎯 **Smart color filtering** - exclude very dark or very light colors from extraction
+- 🎯 **Smart color filtering** - exclude very dark or very light colors with custom brightness thresholds
 - 🔄 **Complementary color conversion** - instantly convert your palette to complementary colors
 - 📋 **Multiple export formats**:
   - RGB values: `(224, 153, 195), (158, 79, 116), ...`
@@ -50,8 +52,9 @@ The `ImagePalette` class encapsulates all color palette operations, making the c
 - 📎 **Copy to clipboard** with one click (RGB or Hex)
 - 🔄 **Reverse color order** if you need the palette backwards
 - 🖼️ **Image preview in terminal** (if climage is installed)
-- 🌐 **Supports URLs and local files**
+- 🌐 **Supports URLs and local files** (http, https, ftp protocols)
 - ⚡ **Fast processing** - images are automatically resized for speed
+- ⌨️ **Graceful interrupts** - Ctrl+C exits cleanly at any point
 
 ## Installation
 
@@ -81,39 +84,32 @@ python main.py
 
 **Tip:** The repository includes sample images in the `Test_Images/` directory that you can use to test the tool.
 
-The tool will guide you through:
-1. Enter an image path or URL
-2. Choose how many colors to extract (1-20)
-3. View your color palette (sorted by hue by default)
-4. Choose what to do:
-   - Reverse the color order
-   - Sort by hue, saturation, or brightness
-   - Convert to complementary colors (opposite on the color wheel)
-   - Copy RGB values to clipboard
-   - Copy Hex values to clipboard
-   - Convert to RGBA JSON format (with custom opacity)
-   - Change the number of colors
-   - Filter dark/bright colors (exclude very dark or very light colors)
+The tool provides an interactive menu-driven workflow:
 
-## Examples
-
-### Basic usage
+1. **Load an image** - Choose between local file (with autocomplete) or URL
+2. **Set color count** - Extract 1-20 dominant colors
+3. **View your palette** - See colors with RGB values, Hex codes, and color swatches (sorted by hue by default)
+4. **Interactive options menu** with arrow key navigation:
+   - **Reverse** the color order
+   - **Sort** by hue, saturation, or brightness
+   - **Convert** to complementary colors (opposite on the color wheel)
+   - **Copy** RGB or Hex values to clipboard
+   - **Export** to RGBA JSON format (with custom opacity)
+   - **Re-extract** with different color counts
+   - **Filter** dark/bright colors with customizable brightness thresholds
+### Loading from URL
 ```bash
 python main.py
 ```
-```
-Enter image file path or URL: https://example.com/wallpaper.jpg
-Enter number of colors to extract (1-20): 7
-```
+1. Select **"Image URL"** from the menu
+2. Paste your URL: `https://example.com/wallpaper.jpg`
 
-### Local file
+### Loading local file
 ```bash
 python main.py
 ```
-```
-Enter image file path or URL: /path/to/your/image.png
-Enter number of colors to extract (1-20): 7
-```
+1. Select **"Local file path"** from the menu
+2. Use autocomplete to navigate to your image
 
 ### Output formats
 
