@@ -3,7 +3,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 import questionary
-from questionary import Style
+#from questionary import Style
 
 def clear_screen():
     # Clear the terminal screen
@@ -78,7 +78,7 @@ def handle_color_options(palette):
     clear_screen()
     
     # Custom style for questionary
-    custom_style = Style([
+    custom_style = questionary.Style([
         ('separator', 'bold fg:ansibrightmagenta'),
         ('pointer', 'fg:ansibrightcyan bold'),
         ('highlighted', 'fg:ansibrightcyan bold'),
