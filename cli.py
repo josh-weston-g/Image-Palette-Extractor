@@ -75,7 +75,7 @@ def get_color_count():
         except ValueError:
             print("\033[91mInvalid input. Please enter an integer between 1 and 20.\033[0m")
         except KeyboardInterrupt:
-            print("\nProcess interrupted by user. Exiting.")
+            print("\nExiting the program. Goodbye!")
             exit(0)
 
 def handle_color_options(palette):
@@ -210,7 +210,7 @@ def handle_color_options(palette):
                 except ValueError:
                     print("\033[91mInvalid opacity value. Please enter a number between 0.0 and 1.0.\033[0m")
                 except KeyboardInterrupt:
-                    print("\nProcess interrupted by user. Exiting.")
+                    print("\nExiting the program. Goodbye!")
                     exit(0)
             clear_screen()
             if opacity == "c":
@@ -237,7 +237,7 @@ def handle_color_options(palette):
                 except ValueError:
                     print("\033[91mInvalid input. Please enter a number between 1 and 20.\033[0m")
                 except KeyboardInterrupt:
-                    print("\nProcess interrupted by user. Exiting.")
+                    print("\nExiting the program. Goodbye!")
                     exit(0)
             clear_screen()
             if num_colors == "c":
@@ -273,6 +273,10 @@ def handle_color_options(palette):
                 if filter_choice == 'cancel':
                     clear_screen()
                     continue
+
+                if filter_choice is None:
+                    print("\nExiting the program. Goodbye!")
+                    exit(0)
                     
                 # Get min and max brightness thresholds
                 min_brightness = 0.15
@@ -314,7 +318,7 @@ def handle_color_options(palette):
                         print("\033[91mInvalid input. Please enter a number between 0.0 and 1.0.\033[0m")
                         continue
                     except KeyboardInterrupt:
-                        print("\nProcess interrupted by user. Exiting.")
+                        print("\nExiting the program. Goodbye!")
                         exit(0)
                     
                     # Validate brightness values

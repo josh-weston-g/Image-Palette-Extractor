@@ -64,7 +64,11 @@ class ImagePalette:
             
         # Display image in terminal if possible
         display_image_in_terminal(self.image)
-        input("Press Enter to continue...")
+        try:
+            input("Press Enter to continue...")
+        except KeyboardInterrupt:
+            print("\nExiting the program. Goodbye!")
+            exit(0)
 
         return self.image
     
