@@ -3,7 +3,6 @@ from PIL import Image
 import requests
 from io import BytesIO
 import questionary
-#from questionary import Style
 
 def clear_screen():
     # Clear the terminal screen
