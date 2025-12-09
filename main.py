@@ -16,7 +16,7 @@ while True:
     # Handle color options menu
     handle_color_options(palette)
 
-    # Ask user if they want to process another image
+    # Ask user if they want to process another image - exit the program if not
     if not ask_continue():
         print("Exiting the program. Goodbye!")
         break
