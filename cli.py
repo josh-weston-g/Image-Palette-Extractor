@@ -3,6 +3,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 import questionary
+from questionary import Style
 
 def clear_screen():
     # Clear the terminal screen
@@ -76,6 +77,15 @@ def handle_color_options(palette):
     # Clear the screen before displaying options
     clear_screen()
     
+    # Custom style for questionary
+    custom_style = Style([
+        ('separator', 'bold fg:ansibrightmagenta'),
+        ('pointer', 'fg:ansibrightcyan bold'),
+        ('highlighted', 'fg:ansibrightcyan bold'),
+        ('selected', 'fg:ansigreen'),
+        ('disabled', 'fg:ansired'),  # Add this for disabled items
+    ])
+
     while True:
         print(f"\nExtracted {palette.num_colors} colors (sorted by {palette.current_sort}):")
         hex_colors = palette.get_hex_list()
@@ -85,25 +95,28 @@ def handle_color_options(palette):
         
         # Options menu choices - some dynamically change based on state
         CHOICES = [
-            questionary.Separator("\n--- Color Manipulation ---"), #! Make bold
+            questionary.Separator("\n--- Color Manipulation ---"),
             questionary.Choice("Reverse colour order", value="reverse"),
             questionary.Choice(f"Sort by {SORT_NEXT[palette.current_sort]['option2']}", value="sort2"),
             questionary.Choice(f"Sort by {SORT_NEXT[palette.current_sort]['option3']}", value="sort3"),
             questionary.Choice("Restore original colors" if palette.is_complementary else "Convert to complementary colors", value="complementary"),
-            questionary.Separator("\n--- Export/Copy ---"), #! Make bold
-            questionary.Choice("Copy RGB values to clipboard" if PYPERCLIP_AVAILABLE else "Copy RGB values to clipboard (not active)", value="copy_rgb"),
-            questionary.Choice("Copy Hex values to clipboard" if PYPERCLIP_AVAILABLE else "Copy Hex values to clipboard (not active)", value="copy_hex"),
+            questionary.Separator("\n--- Export/Copy ---"),
+            questionary.Choice("Copy Hex values to clipboard", value="copy_hex") if PYPERCLIP_AVAILABLE else questionary.Choice("Copy Hex values to clipboard", value="copy_hex", disabled="Pyperclip not installed"),
+            questionary.Choice("Copy RGB values to clipboard", value="copy_rgb") if PYPERCLIP_AVAILABLE else questionary.Choice("Copy RGB values to clipboard", value="copy_rgb", disabled="Pyperclip not installed"),
             questionary.Choice("Convert to RGBA JSON format", value="rgba_json"),
-            questionary.Separator("\n--- Modify Extraction ---"), #! Make bold
+            questionary.Separator("\n--- Modify Extraction ---"),
             questionary.Choice("Change number of colours", value="change_num"),
             questionary.Choice("Remove color filtering" if palette.is_filtered else "Filter dark/bright colours", value="filter_colors"),
+            questionary.Separator("    "),
             questionary.Choice("Continue", value="continue")
         ]
 
+        # Print empty line for spacing
+        print()
         options = questionary.select(
-            "\nSelect an option:",
+            "Select an option:",
             choices=CHOICES,
-            qmark=""
+            style=custom_style,
         ).ask()
 
         if options == 'reverse':
