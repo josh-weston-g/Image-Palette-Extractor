@@ -216,7 +216,7 @@ def handle_color_options(palette):
             if opacity == "c":
                 continue
             colors_list = palette.get_rgba_list(opacity)
-            print("\n\033[96mExtracted colors (RGBA):")
+            print("\n\033[92mExtracted colors (RGBA):")
             print(json.dumps(colors_list, indent=2))
             print("\033[0m")
             continue
