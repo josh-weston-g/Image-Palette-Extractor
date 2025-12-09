@@ -331,13 +331,9 @@ def handle_color_options(palette):
             
         # Handle keyboard interrupt - questionary handles it internally and returns None
         elif options is None:
-            print("\nProcess interrupted by user. Exiting.")
+            print("\nExiting the program. Goodbye!")
             exit(0)
 
 def ask_continue():
     # Ask user if they want to process another image
-    try:
-        return input("\nProcess another image? (y/n): ").strip().lower() == 'y'
-    except KeyboardInterrupt:
-        print("\nProcess interrupted by user. Exiting.")
-        exit(0)
+    return questionary.confirm("Do you want to process another image?").ask()
