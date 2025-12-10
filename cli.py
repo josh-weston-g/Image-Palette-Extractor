@@ -135,7 +135,8 @@ def handle_color_options(palette):
             questionary.Choice("Change number of colours", value="change_num"),
             questionary.Choice("Remove color filtering" if palette.is_filtered else "Filter dark/bright colours", value="filter_colors"),
             questionary.Separator("    "),
-            questionary.Choice("Continue", value="continue")
+            questionary.Choice("Process another image", value="continue"),
+            questionary.Choice("Exit program", value="exit")
         ]
 
         # Print empty line for spacing
@@ -358,14 +359,14 @@ def handle_color_options(palette):
                 continue
         
         elif options == 'continue':
-            # User pressed enter - exit options menu
+            # User pressed enter - exit options menu and return to main loop
             return
+        
+        elif options == 'exit':
+            print("\nExiting the program. Goodbye!")
+            exit(0)
             
         # Handle keyboard interrupt - questionary handles it internally and returns None
         elif options is None:
             print("\nExiting the program. Goodbye!")
             exit(0)
-
-def ask_continue():
-    # Ask user if they want to process another image
-    return questionary.confirm("Do you want to process another image?").ask()
