@@ -150,7 +150,6 @@ def handle_color_options(palette):
             # Reverse color order
             clear_screen()
             palette.reverse()
-            print("\033[92m\nColor order reversed.\033[0m")
             continue
         
         elif options == 'sort2':
@@ -172,10 +171,8 @@ def handle_color_options(palette):
             clear_screen()
             if palette.is_complementary:
                 palette.remove_complementary()
-                print("\033[92m\nRestored original colors.\033[0m")
             else:
                 palette.to_complementary()
-                print("\033[92m\nConverted to complementary colors.\033[0m")
             continue
         
         elif options == 'copy_rgb':
@@ -238,10 +235,6 @@ def handle_color_options(palette):
             # Toggle showing HSV values
             palette.show_hsv = not palette.show_hsv
             clear_screen()
-            if palette.show_hsv:
-                print("\033[92m\nHSV values will now be shown.\033[0m")
-            else:
-                print("\033[92m\nHSV values will no longer be shown.\033[0m")
             continue
 
         elif options == "change_num":
