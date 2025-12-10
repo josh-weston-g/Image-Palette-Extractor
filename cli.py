@@ -112,7 +112,11 @@ def handle_color_options(palette):
                 h = rgb_to_hue(color)
                 s = rgb_to_saturation(color)
                 v = rgb_to_brightness(color)
-                color_info += f" | HSV({h:.2f}, {s:.2f}, {v:.2f})"
+                # Format with bold on the number for current sort method
+                h_val = f"\033[1m{h:.2f}\033[0m" if palette.current_sort == "hue" else f"{h:.2f}"
+                s_val = f"\033[1m{s:.2f}\033[0m" if palette.current_sort == "saturation" else f"{s:.2f}"
+                v_val = f"\033[1m{v:.2f}\033[0m" if palette.current_sort == "brightness" else f"{v:.2f}"
+                color_info += f" | HSV({h_val}, {s_val}, {v_val})"
             print(color_info)
         
         # Options menu choices - some dynamically change based on state
