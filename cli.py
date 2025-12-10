@@ -3,6 +3,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 import questionary
+from color_utils import rgb_to_hue, rgb_to_saturation, rgb_to_brightness
 
 # Custom style for questionary
 select_style = questionary.Style([
@@ -105,7 +106,14 @@ def handle_color_options(palette):
         hex_colors = palette.get_hex_list()
         for i, color in enumerate(palette.colors):
             r, g, b = color
-            print(f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r}, {g}, {b}) | Hex: {hex_colors[i]}")
+            # Build color info string with fixed-width formatting - can use 3> or 3< for alignment
+            color_info = f"\033[48;2;{r};{g};{b}m    \033[0m RGB({r:<3}, {g:<3}, {b:<3}) | Hex: {hex_colors[i]}"
+            if palette.show_hsv:
+                h = rgb_to_hue(color)
+                s = rgb_to_saturation(color)
+                v = rgb_to_brightness(color)
+                color_info += f" | HSV({h:.2f}, {s:.2f}, {v:.2f})"
+            print(color_info)
         
         # Options menu choices - some dynamically change based on state
         CHOICES = [
@@ -118,6 +126,7 @@ def handle_color_options(palette):
             questionary.Choice("Copy Hex values to clipboard", value="copy_hex") if PYPERCLIP_AVAILABLE else questionary.Choice("Copy Hex values to clipboard", value="copy_hex", disabled="Pyperclip not installed"),
             questionary.Choice("Copy RGB values to clipboard", value="copy_rgb") if PYPERCLIP_AVAILABLE else questionary.Choice("Copy RGB values to clipboard", value="copy_rgb", disabled="Pyperclip not installed"),
             questionary.Choice("Convert to RGBA JSON format", value="rgba_json"),
+            questionary.Choice("Show HSV values" if not palette.show_hsv else "Hide HSV values", value="toggle_hsv"),
             questionary.Separator("\n--- Modify Extraction ---"),
             questionary.Choice("Change number of colours", value="change_num"),
             questionary.Choice("Remove color filtering" if palette.is_filtered else "Filter dark/bright colours", value="filter_colors"),
@@ -219,6 +228,16 @@ def handle_color_options(palette):
             print("\n\033[92mExtracted colors (RGBA):")
             print(json.dumps(colors_list, indent=2))
             print("\033[0m")
+            continue
+
+        elif options == "toggle_hsv":
+            # Toggle showing HSV values
+            palette.show_hsv = not palette.show_hsv
+            clear_screen()
+            if palette.show_hsv:
+                print("\033[92m\nHSV values will now be shown.\033[0m")
+            else:
+                print("\033[92m\nHSV values will no longer be shown.\033[0m")
             continue
 
         elif options == "change_num":

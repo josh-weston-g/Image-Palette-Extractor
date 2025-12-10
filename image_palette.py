@@ -30,11 +30,12 @@ class ImagePalette:
         self.current_sort = "hue"
         # Apply initial sort
         self.sort_by("hue")
-        # Initialise state tracking for filtering and complementary colors
+        # Initialise state tracking for: filtering, complementary colors and show HSV values
         self.is_filtered = False
         self.is_complementary = False
         self.original_unfiltered_colors = None # For filter restoration
         self.original_non_complementary_colors = None # For complementary color restoration
+        self.show_hsv = False
 
     def _process_image(self):
         """
