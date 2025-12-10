@@ -95,6 +95,7 @@ The tool provides an interactive menu-driven workflow:
    - **Convert** to complementary colors (opposite on the color wheel)
    - **Copy** RGB or Hex values to clipboard
    - **Export** to RGBA JSON format (with custom opacity)
+   - **Toggle HSV** values display on and off
    - **Re-extract** with different color counts
    - **Filter** dark/bright colors with customizable brightness thresholds
 ### Loading from URL
@@ -146,6 +147,13 @@ python main.py
 - climage (optional - for terminal image preview)
 
 ## Troubleshooting
+
+### Default brightness thresholds
+When filtering dark/bright colors, the tool uses these defaults:
+- **Dark filter threshold:** 0.15 (filters colors darker than 15% brightness)
+- **Bright filter threshold:** 0.85 (filters colors brighter than 85% brightness)
+
+You can customize these values when prompted during filtering.
 
 ### Clipboard not working
 If you get an error when trying to copy colors to clipboard:
