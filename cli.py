@@ -225,11 +225,19 @@ def handle_color_options(palette):
                     exit(0)
             clear_screen()
             if opacity == "c":
-                continue
+                continue            
             colors_list = palette.get_rgba_list(opacity)
             print("\n\033[92mExtracted colors (RGBA):")
             print(json.dumps(colors_list, indent=2))
             print("\033[0m")
+            if not PYPERCLIP_AVAILABLE:
+                print("\033[93mpyperclip module not available. Pyperclip must be installed to copy values to clipboard. Install pyperclip with: pip install pyperclip\033[0m")
+            else:
+                try:
+                    pyperclip.copy(json.dumps(colors_list))
+                    print("\033[92mRGBA values copied to clipboard.\033[0m")
+                except Exception as e:
+                    print(f"\033[91mFailed to copy RGBA values to clipboard: {e}\033[0m")
             continue
 
         elif options == "toggle_hsv":
