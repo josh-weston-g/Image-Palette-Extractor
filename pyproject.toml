@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image_palette_extractor"
+version = "1.0.0"
+description = "Extract dominant color palettes from images using K-means clustering"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Josh Weston", email = "westonjosh.business@gmail.com"}
+]
+requires-python = ">=3.8"
+dependencies = [
+    "Pillow",
+    "numpy",
+    "scikit-learn",
+    "requests",
+    "climage",
+    "pyperclip",
+    "questionary",
+]
+
+[project.scripts]
+palette-extract = "image_palette_extractor.main:main"
+
+[tool.setuptools]
+packages = ["image_palette_extractor"]
