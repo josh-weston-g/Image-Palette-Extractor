@@ -26,16 +26,13 @@ The codebase uses an object-oriented architecture with focused, reusable modules
 
 ```
 Image-Palette-Extractor/
-├── image_palette_extractor/  # Main package directory
-│   ├── __init__.py
-│   ├── main.py            # Entry point - orchestrates the application flow
-│   ├── image_palette.py   # ImagePalette class - core palette extraction and manipulation
-│   ├── cli.py             # Command-line interface and user interaction
-│   ├── image_utils.py     # Image processing utilities (filtering, display)
-│   └── color_utils.py     # Color conversion functions (RGB to Hue/Saturation/Brightness/Hex)
-├── pyproject.toml         # Package configuration for pip installation
-├── requirements.txt       # Python dependencies
-└── Test_Images/           # Sample images for testing
+├── main.py            # Entry point - orchestrates the application flow
+├── image_palette.py   # ImagePalette class - core palette extraction and manipulation
+├── cli.py             # Command-line interface and user interaction
+├── image_utils.py     # Image processing utilities (filtering, display)
+├── color_utils.py     # Color conversion functions (RGB to Hue/Saturation/Brightness/Hex)
+├── requirements.txt   # Python dependencies
+└── Test_Images/       # Sample images for testing
 ```
 
 The `ImagePalette` class encapsulates all color palette operations, making the code easy to maintain, test, and extend with new features.
@@ -61,29 +58,15 @@ The `ImagePalette` class encapsulates all color palette operations, making the c
 
 ## Installation
 
-### Option 1: Install with pip (Recommended)
-
-Install directly from GitHub:
-```bash
-pip install git+https://github.com/josh-weston-g/Image-Palette-Extractor.git
-```
-
-Then run from anywhere:
-```bash
-palette-extract
-```
-
-### Option 2: Manual Installation
-
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/josh-weston-g/Image-Palette-Extractor.git
    cd Image-Palette-Extractor
    ```
 
-2. **Create a virtual environment (recommended):**
+2. **Create a virtual environment:**
    ```bash
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
@@ -92,22 +75,9 @@ palette-extract
    pip install -r requirements.txt
    ```
 
-4. **Run the program:**
-   ```bash
-   python image_palette_extractor/main.py
-   ```
-
 ## Usage
 
-If installed with pip:
-```bash
-palette-extract
-```
-
-If running manually:
-```bash
-python image_palette_extractor/main.py
-```
+Run the program:
 ```bash
 python main.py
 ```
