@@ -360,7 +360,16 @@ def handle_color_options(palette):
         
         elif options == 'continue':
             # User pressed enter - exit options menu and return to main loop
-            return
+            confirmation = questionary.confirm("This will discard the current palette. Continue?", default=False).ask()
+            if confirmation:
+                return
+            elif confirmation is None:
+                # Handle keyboard interrupt
+                print("\nExiting the program. Goodbye!")
+                exit(0)
+            else:
+                clear_screen()
+                continue
         
         elif options == 'exit':
             print("\nExiting the program. Goodbye!")
