@@ -170,10 +170,7 @@ def handle_color_options(palette):
         elif options == 'complementary':
             # Toggle complementary colors
             clear_screen()
-            if palette.is_complementary:
-                palette.remove_complementary()
-            else:
-                palette.to_complementary()
+            palette.to_complementary()
             continue
         
         elif options == 'copy_rgb':
