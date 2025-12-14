@@ -3,7 +3,6 @@ from PIL import Image
 import requests
 from io import BytesIO
 import questionary
-from color_utils import rgb_to_hue, rgb_to_saturation, rgb_to_brightness
 
 # Custom style for questionary
 select_style = questionary.Style([
@@ -83,7 +82,7 @@ def handle_color_options(palette):
     # Display colors and handle user options menu using ImagePalette object
     # Import dependencies inside function to avoid circular imports
     import json
-    
+    from color_utils import rgb_to_hue, rgb_to_saturation, rgb_to_brightness
     # Check for pyperclip availability
     try:
         import pyperclip
