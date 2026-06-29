@@ -39,22 +39,22 @@ The `ImagePalette` class encapsulates all color palette operations, making the c
 
 ## Features
 
-- 🎨 **Extract 1-20 dominant colors** from any image using K-means clustering
-- 🖱️ **Interactive menu navigation** - arrow keys and visual selection with questionary
-- 📁 **Smart file selection** - autocomplete for local files or paste URLs
-- 🌈 **Flexible color sorting** - sort by hue (rainbow order), saturation, or brightness
-- 🎯 **Smart color filtering** - exclude very dark or very light colors with custom brightness thresholds
-- 🔄 **Complementary color conversion** - instantly convert your palette to complementary colors
-- 📋 **Multiple export formats**:
+- **Extract 1-20 dominant colors** from any image using K-means clustering
+- **Interactive menu navigation** - arrow keys and visual selection with questionary
+- **Smart file selection** - autocomplete for local files or paste URLs
+- **Flexible color sorting** - sort by hue (rainbow order), saturation, or brightness
+- **Smart color filtering** - exclude very dark or very light colors with custom brightness thresholds
+- **Complementary color conversion** - instantly convert your palette to complementary colors
+- **Multiple export formats**:
   - RGB values: `(224, 153, 195), (158, 79, 116), ...`
   - Hex codes: `#E099C3, #9E4F74, ...`
   - RGBA JSON: `["rgba(224, 153, 195, 0.15)", ...]`
-- 📎 **Copy to clipboard** with one click (RGB or Hex)
-- 🔄 **Reverse color order** if you need the palette backwards
-- 🖼️ **Image preview in terminal** (if climage is installed)
-- 🌐 **Supports URLs and local files** (http, https, ftp protocols)
-- ⚡ **Fast processing** - images are automatically resized for speed
-- ⌨️ **Graceful interrupts** - Ctrl+C exits cleanly at any point
+- **Copy to clipboard** with one click (RGB or Hex)
+- **Reverse color order** if you need the palette backwards
+- **Image preview in terminal** (if climage is installed)
+- **Supports URLs and local files** (http, https, ftp protocols)
+- **Fast processing** - images are automatically resized for speed
+- **Graceful interrupts** - Ctrl+C exits cleanly at any point
 
 ## Installation
 
